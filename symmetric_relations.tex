@@ -1,2 +1,113 @@
 \section{Function class of symmetric inner product relations}\label{sec:symmetric_relations}
 
+Consider a symmetric relation $r: \calX \times \calX \to \reals$ modeled as the inner product of neural network encodings of a pair of inputs, $x, y \in \calX$,
+
+\begin{equation}\label{eq:symmetric_iprod_relation}
+    r(x, y) = \iprod{\phi(x)}{\phi(y)},
+\end{equation}
+
+\noindent where $\phi$ is a neural network. Symmetric relation functions modeled in this way are natural \textit{measures of similarity}. Intuitively, $\phi$ extracts features of the objects $x,y$, and the inner product computes a measure of similarity between those features. To see this more formally, suppose we have a normalized inner product relation (i.e., $\phi: \calX \to \bbS^{d}$), then we have
+
+\begin{equation}
+    \twonorm{\phi(x) - \phi(y)}^2 = 2 - 2 r(x, y).
+\end{equation}
+
+The Cauchy-Schwartz inequality states that
+\begin{equation}
+    r(x, y)^2 \leq r(x, x) r(y, y) = 1, \ \forall x, y \in \calX.
+\end{equation}
+
+Thus, $r(x,y)$ is large and close to $1$ when $x$ and $y$ are similar (with respect to $\phi$), and close to $0$ when $x, y$ are dissimilar. Moreover, $r: \calX \times \calX \to \reals$ induces a geometry on $\calX$ with well-defined notions of distance ($d(x,y) = \sqrt{2 - 2 r(x,y)}$), angles ($\cos(\theta) = r(x,y)/\sqrt{r(x,x) r(y,y)}$), and orthogonality ($x \perp y \iff r(x,y) = 0$).
+
+In this section, we characterize the class of relation functions which can be modeled by symmetric inner products of neural networks. We show that any continuous symmetriic positive definite kernel (i.e., Mercer kernel) can be approximated by a symmetric inner product of neural networks. This characterization is strict since, clearly $r(x,y)$ is a Mercer kernel for any $\phi$ since, $\forall g \in L^2(\calX)$,
+\begin{equation*}
+    \begin{split}
+        \int \int g(x) r(x,y) g(y) dx dy &= \int \int g(x) \iprod{\phi(x)}{\phi(y)} g(y) dx dy \\
+        &= \iprod{\int g(x) \phi(x) dx}{\int g(y) \phi(y) dy} \\
+        &= \twonorm{\int g(x) \phi(x) dx} \geq 0.
+    \end{split}
+\end{equation*}
+
+\comment{is this necessary? too much detail? maybe there's no need for an argument, it's the inner product of a feature transform.}
+
+The following result states that if $\phi$ is a universal approximator such as a multi-layer perceptron, for any positive-definite symmetric kernel $r$, there exists a neural network $\phi$ such that the induced inner product relation approximates $r$ arbitrarily well.
+
+\begin{theorem}[Function class of inner product relational neural networks]
+	\label{theorem:function_class_inner_product_relnn}
+	\hphantom{~}
+
+	Suppose the data lies in a compact Hausdorff space \(\mathcal{X}\) (e.g., a metric space) with a finite countably additive measure. In particular, \(\mathcal{X}\) can be any compact subset of \(\mathbb{R}^d\). Consider the relation model,
+	\begin{equation*}
+		\hat{r}(x, y) := \iprod{\phi_{\theta}(x)}{\phi_{\theta}(y)},
+	\end{equation*}
+
+    \noindent where $\phi_{\theta}: \calX \to \reals^d$ is a multi-layer perceptron with parameters $\theta$.
+
+	For any symmetric positive-definite kernel $r: \calX \times \calX \to \reals$, there exists a multi-layer perceptron with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over \((x,y) \in \mathcal{X}\times\mathcal{X}\). More precisely, for all \(\epsilon > 0\), there exists a neural network with parameters $\theta$ such that 
+    \[\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \hat{r}(x,y)}} < \epsilon.\]
+\end{theorem}
+
+% TODO: change j index to i index?
+\begin{proof}
+	\hphantom{~}
+
+	By Mercer's theorem \parencite{mercerFunctionsPositive1909, sunMercerTheorem2005, micchelliUniversalKernels2006}, there exists \((\psi_i)_{i \in \mathbb{N}}\), \(\lambda_i \geq 0\) such that \(r(x,y) = \sum_{i=1}^{\infty}{\lambda_i \psi_i(x) \psi_i(y)}\), where \(\psi_i\) and \(\lambda_i\) are eigenfunctions and eigenvalues of the integral operator
+
+	\begin{align*}
+		T_r&: L^2(\mathcal{X}) \to L^2(\mathcal{X}) \\
+		T_r(f) &= \int_{\mathcal{X}}{r(\cdot, x) f(x) dx}.
+	\end{align*}
+
+	Furthermore, the convergence of the series is uniform:
+	\begin{equation}
+		\lim_{n \to \infty} \sup_{x,y \in \mathcal{X}} \lvert r(x,y) - \sum_{j=1}^{n}{\lambda_j \psi_j(x) \psi_j(y) \rvert} = 0
+	\end{equation}
+
+	Let \(d\) be such that
+	\begin{equation}
+		\label{eq:proof_mercer_thm_unif_abs_cv}
+		\sup_{x,y \in \mathcal{X}} \left\lvert r(x,y) - \sum_{j=1}^{d}{\lambda_j \psi_j(x) \psi_j(y)} \right\rvert < \frac{\epsilon}{2}.
+	\end{equation}
+
+	Let $d$ be the output dimension of \(\phi_\theta\) such that it maps from $\calX$ to $\reals^d$. Let \((\sqrt{\lambda_1} \psi_1, \ldots, \sqrt{\lambda_{d}} \psi_{d})\) be the function to be approximated by the neural network \(\phi_\theta\). By the universal approximation property of multi-layer perceptrons, for any \(\epsilon_1\), there exists a neural network with parameters \(\theta\) such that
+	\begin{equation}
+		\label{eq:proof_NN_UAP}
+		\sup_{x\in \mathcal{X}}{\abs{(\phi_\theta(x))_j - \sqrt{\lambda_j} \psi_j(x)}} < \epsilon_1, \ \forall j \in \{1, \ldots, d\},
+	\end{equation}
+
+    \noindent where $(\phi_\theta(x))_j$ is the \(j\)th component of $\phi_\theta(x)$. We refer to \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993} for results guaranteeing the existence of neural networks which can approximate any continuous function over a bounded domain.
+
+	Now note that the approximation error for \(r\) is bounded by
+	\begin{equation}
+		\label{eq:proof_approx_bound}
+		\begin{split}
+			\sup_{x, y \in \mathcal{X}}&{
+				\left\lvert r(x,y) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert}\\
+			&= \sup_{x, y \in \mathcal{X}}{
+				\left\lvert r(x,y) - \sum_{j=1}^{d}{(\phi_\theta(x))_j (\phi_\theta(y))_j} \right\rvert} \\
+			&\leq \sup_{x,y \in \mathcal{X}}{ \left(
+				\left\lvert r(x,y) - \sum_{j=1}^{d}{\lambda_j \psi_j(x) \psi_j(y)} \right\rvert
+				+ \left\lvert \sum_{j=1}^{d}{\lambda_i \psi_j(x) \psi_i(y) - (\phi_\theta(x))_j (\phi_\theta(y))_j} \right\rvert  \right) }
+		\end{split}
+	\end{equation}
+	The first term is bounded by \(\frac{\epsilon}{2}\) by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded uniformly on \(x,y\) by
+	\begin{equation*}
+		\begin{split}
+			&\left\lvert \left(\sum_{j=1}^{d}{\lambda_i \psi_j(x) \psi_i(y)}\right) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert  \\
+			&\leq \sum_{j=1}^{d}{ \left\lvert \lambda_i \psi_j(x) \psi_i(y) - (\phi_\theta(x))_j (\phi_\theta(y))_j \right\rvert} \\
+			&\leq \sum_{j=1}^{d}{\left(
+				\left\lvert (\phi_\theta(x))_j \right\rvert \left\lvert \sqrt{\lambda_j} \psi_j(y) - (\phi_\theta(y))_j \right\rvert
+				+ \lvert (\phi_\theta(y))_j \rvert \left\lvert \sqrt{\lambda_j} \psi_j(x) - (\phi_\theta(x))_j \right\rvert
+				\right)}
+		\end{split}
+	\end{equation*}
+	Let \(\epsilon_1\) in~\eqref{eq:proof_NN_UAP} be small enough such that the above is smaller than \(\frac{\epsilon}{2}\). Then, by~\eqref{eq:proof_approx_bound}, we have that
+	\begin{equation*}
+		\sup_{x, y \in \mathcal{X}}{
+			\abs{r(x,y) - \iprod{\phi_\theta(x)}{\phi_\theta(y)}}} \leq \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+	\end{equation*}
+\end{proof}
+
+\begin{remark}
+	The result also holds for universal approximators other than feedforward neural networks, provided that the same uniform approximation property holds.
+\end{remark}
