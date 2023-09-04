@@ -1,0 +1,10 @@
+# ignore certain files in paper directory
+*.pdf
+*.aux
+*.blg
+*.log
+*.out
+*.bbl
+*.synctex.gz
+*.bcf
+*.xml
