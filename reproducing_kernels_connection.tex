@@ -107,7 +107,7 @@ This form is reminiscent of the asymmetric inner product of neural networks,
         r(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\calW} \equiv (\Phi^*(y))(x), \ x, y \in \calX.
     \end{equation*}
 
-    By~\parencite{}, any two Hilbert spaces with equal dimension are isometrically isomorphic. Hence, without loss of generality, we can restrict our attention to the feature space $\calW = \ell^2(\bbN)$. The dual space is $\calW^* = \ell^2(\bbN)$. Hence, for feature maps $\Phi, \Phi^*$, the ground truth relation to be approximated is,
+    Without loss of generality, we can restrict our attention to the feature space $\calW = \ell^2(\bbN)$, since any two Hilbert spaces with equal dimension are isometrically isomorphic. The dual space is $\calW^* = \ell^2(\bbN)$. Hence, for feature maps $\Phi, \Phi^*$, the ground truth relation to be approximated is,
     \begin{equation*}
         r(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\ell^2(\bbN)} \equiv (\Phi^*(y))(\Phi(x)), \ x, y \in \calX.
     \end{equation*}
@@ -128,32 +128,32 @@ This form is reminiscent of the asymmetric inner product of neural networks,
 
     First, since $\Phi(x), \sigma \circ \Phi^*(y) \in \ell^2(\bbN), \forall x, y$, and $\calX$ is compact, we have
     \begin{equation*}
-        \lim_{n \to \infty} \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{j=1}^{n} (\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j} = 0.
+        \lim_{n \to \infty} \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{i=1}^{n} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} = 0.
     \end{equation*}
 
     Thus, let $d$ be such that,
     \begin{equation}\label{eq:thm1_proof_eq1}
-        \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{j=1}^{d} (\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j} < \frac{\varepsilon}{2}.
+        \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} < \frac{\varepsilon}{2}.
     \end{equation}
 
     Now, let the MLPs $\phi_\theta, \psi_\theta$ be functions from $\calX$ to $\reals^{d}$ (i.e., we specify the architecture of the MLPs such that the output space is $d$-dimensional). Let $\paren{(\Phi(x))_1, \ldots, (\Phi(x))_{d}}$ be the function to be approximated by the MLP $\phi_\theta$ and let $\paren{(\sigma(\Phi^*(y)))_1, \ldots, (\sigma(\Phi^*(y)))_{d}}$ be the function to be approximated by the MLP $\psi_\theta$. By universal approximation results on MLPs (e.g.,~\parencite{barronUniversalApproximation1993, cybenkoApproximationSuperpositions1989, hornikMultilayerFeedforward1989}), for any $\tilde{\varepsilon} > 0$, there exists parameters $\theta$ such that,
 
     \begin{equation}\label{eq:thm1_proof_eq2}
-        \sup_{x \in \calX} \abs{(\phi_\theta(x))_j - (\Phi(x))_{j}} < \tilde{\varepsilon} \ \text{ and } \ \sup_{x \in \calX} \abs{(\psi_\theta(y))_j - (\sigma(\Phi^*(x)))_{j}} < \tilde{\varepsilon}, \ \forall j \in \set{1, \ldots, d}.
+        \sup_{x \in \calX} \abs{(\phi_\theta(x))_i - (\Phi(x))_{i}} < \tilde{\varepsilon} \ \text{ and } \ \sup_{x \in \calX} \abs{(\psi_\theta(y))_i - (\sigma(\Phi^*(x)))_{i}} < \tilde{\varepsilon}, \ \forall i \in \set{1, \ldots, d}.
     \end{equation}
 
     Now,
     \begin{align*}
         &\sup_{x,y \in \calX} \abs{r(x,y) - \hat{r}(x,y)} \\
         &= \sup_{x,y \in \calX} \abs{r(x,y) - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
-        &\leq \sup_{x,y\in \calX} \paren{\abs{r(x,y) - \sum_{j=1}^{d} (\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j} + \abs{\sum_{j=1}^{d} (\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j - \iprod{\phi_\theta(x)}{\psi_\theta(y)}}} \\
+        &\leq \sup_{x,y\in \calX} \paren{\abs{r(x,y) - \sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} + \abs{\sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - \iprod{\phi_\theta(x)}{\psi_\theta(y)}}} \\
     \end{align*}
 
     The first term is less than $\varepsilon / 2$ by~\Cref{eq:thm1_proof_eq1}. Now, we bound the second term uniformly on $x,y \in \calX$,
     \begin{align*}
-        &\abs{\sum_{j=1}^{d} (\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
-        &\leq \sum_{j=1}^{d} \abs{(\Phi(x))_j \cdot (\sigma(\Phi^*(y)))_j - (\phi_\theta(x))_j(\psi_j(y))_j} \\
-        &\leq \sum_{j=1}^{d} \abs{(\phi_\theta(x))_j} \abs{(\sigma(\Phi^*(y)))_j - (\psi_j(y))_j} + \abs{(\psi_\theta(y))_j} \abs{(\Phi(x))_j - (\phi_\theta(x))_j}\\
+        &\abs{\sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
+        &\leq \sum_{i=1}^{d} \abs{(\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - (\phi_\theta(x))_i(\psi_i(y))_i} \\
+        &\leq \sum_{i=1}^{d} \abs{(\phi_\theta(x))_i} \abs{(\sigma(\Phi^*(y)))_i - (\psi_i(y))_i} + \abs{(\psi_\theta(y))_i} \abs{(\Phi(x))_i - (\phi_\theta(x))_i}\\
     \end{align*}
 
     Let $\tilde{\varepsilon}$ in~\Cref{eq:thm1_proof_eq2} be small enough such that the above is smaller than $\varepsilon / 2$. This shows that
