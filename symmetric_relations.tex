@@ -28,7 +28,7 @@ In this section, we characterize the class of relation functions which can be mo
     \end{split}
 \end{equation*}
 
-\comment{is this necessary? too much detail? maybe there's no need for an argument, it's the inner product of a feature transform.}
+% COMMENT [AWNI]: is this ^ unnecessary detail? could just say this, maybe there's no need for an argument.
 
 The following result states that if $\phi$ is a universal approximator such as a multi-layer perceptron, for any positive-definite symmetric kernel $r$, there exists a neural network $\phi$ such that the induced inner product relation approximates $r$ arbitrarily well.
 
@@ -60,22 +60,22 @@ The following result states that if $\phi$ is a universal approximator such as a
 
 	Furthermore, the convergence of the series is uniform:
 	\begin{equation}
-		\lim_{n \to \infty} \sup_{x,y \in \mathcal{X}} \lvert r(x,y) - \sum_{j=1}^{n}{\lambda_j \psi_j(x) \psi_j(y) \rvert} = 0
+		\lim_{n \to \infty} \sup_{x,y \in \mathcal{X}} \lvert r(x,y) - \sum_{i=1}^{n}{\lambda_i \psi_i(x) \psi_i(y) \rvert} = 0
 	\end{equation}
 
 	Let \(d\) be such that
 	\begin{equation}
 		\label{eq:proof_mercer_thm_unif_abs_cv}
-		\sup_{x,y \in \mathcal{X}} \left\lvert r(x,y) - \sum_{j=1}^{d}{\lambda_j \psi_j(x) \psi_j(y)} \right\rvert < \frac{\epsilon}{2}.
+		\sup_{x,y \in \mathcal{X}} \left\lvert r(x,y) - \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)} \right\rvert < \frac{\epsilon}{2}.
 	\end{equation}
 
 	Let $d$ be the output dimension of \(\phi_\theta\) such that it maps from $\calX$ to $\reals^d$. Let \((\sqrt{\lambda_1} \psi_1, \ldots, \sqrt{\lambda_{d}} \psi_{d})\) be the function to be approximated by the neural network \(\phi_\theta\). By the universal approximation property of multi-layer perceptrons, for any \(\epsilon_1\), there exists a neural network with parameters \(\theta\) such that
 	\begin{equation}
 		\label{eq:proof_NN_UAP}
-		\sup_{x\in \mathcal{X}}{\abs{(\phi_\theta(x))_j - \sqrt{\lambda_j} \psi_j(x)}} < \epsilon_1, \ \forall j \in \{1, \ldots, d\},
+		\sup_{x\in \mathcal{X}}{\abs{(\phi_\theta(x))_i - \sqrt{\lambda_i} \psi_i(x)}} < \epsilon_1, \ \forall i \in \{1, \ldots, d\},
 	\end{equation}
 
-    \noindent where $(\phi_\theta(x))_j$ is the \(j\)th component of $\phi_\theta(x)$. We refer to \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993} for results guaranteeing the existence of neural networks which can approximate any continuous function over a bounded domain.
+    \noindent where $(\phi_\theta(x))_i$ is the \(i\)th component of $\phi_\theta(x)$. We refer to \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993} for results guaranteeing the existence of neural networks which can approximate any continuous function over a bounded domain.
 
 	Now note that the approximation error for \(r\) is bounded by
 	\begin{equation}
@@ -84,20 +84,20 @@ The following result states that if $\phi$ is a universal approximator such as a
 			\sup_{x, y \in \mathcal{X}}&{
 				\left\lvert r(x,y) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert}\\
 			&= \sup_{x, y \in \mathcal{X}}{
-				\left\lvert r(x,y) - \sum_{j=1}^{d}{(\phi_\theta(x))_j (\phi_\theta(y))_j} \right\rvert} \\
+				\left\lvert r(x,y) - \sum_{i=1}^{d}{(\phi_\theta(x))_i (\phi_\theta(y))_i} \right\rvert} \\
 			&\leq \sup_{x,y \in \mathcal{X}}{ \left(
-				\left\lvert r(x,y) - \sum_{j=1}^{d}{\lambda_j \psi_j(x) \psi_j(y)} \right\rvert
-				+ \left\lvert \sum_{j=1}^{d}{\lambda_i \psi_j(x) \psi_i(y) - (\phi_\theta(x))_j (\phi_\theta(y))_j} \right\rvert  \right) }
+				\left\lvert r(x,y) - \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)} \right\rvert
+				+ \left\lvert \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y) - (\phi_\theta(x))_i (\phi_\theta(y))_i} \right\rvert  \right) }
 		\end{split}
 	\end{equation}
 	The first term is bounded by \(\frac{\epsilon}{2}\) by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded uniformly on \(x,y\) by
 	\begin{equation*}
 		\begin{split}
-			&\left\lvert \left(\sum_{j=1}^{d}{\lambda_i \psi_j(x) \psi_i(y)}\right) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert  \\
-			&\leq \sum_{j=1}^{d}{ \left\lvert \lambda_i \psi_j(x) \psi_i(y) - (\phi_\theta(x))_j (\phi_\theta(y))_j \right\rvert} \\
-			&\leq \sum_{j=1}^{d}{\left(
-				\left\lvert (\phi_\theta(x))_j \right\rvert \left\lvert \sqrt{\lambda_j} \psi_j(y) - (\phi_\theta(y))_j \right\rvert
-				+ \lvert (\phi_\theta(y))_j \rvert \left\lvert \sqrt{\lambda_j} \psi_j(x) - (\phi_\theta(x))_j \right\rvert
+			&\left\lvert \left(\sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)}\right) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert  \\
+			&\leq \sum_{i=1}^{d}{ \left\lvert \lambda_i \psi_i(x) \psi_i(y) - (\phi_\theta(x))_i (\phi_\theta(y))_i \right\rvert} \\
+			&\leq \sum_{i=1}^{d}{\left(
+				\left\lvert (\phi_\theta(x))_i \right\rvert \left\lvert \sqrt{\lambda_i} \psi_i(y) - (\phi_\theta(y))_i \right\rvert
+				+ \lvert (\phi_\theta(y))_i \rvert \left\lvert \sqrt{\lambda_i} \psi_i(x) - (\phi_\theta(x))_i \right\rvert
 				\right)}
 		\end{split}
 	\end{equation*}
