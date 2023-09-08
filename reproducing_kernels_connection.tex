@@ -50,20 +50,17 @@ Furthermore,~\parencite[Theorems 3 and 4]{zhangReproducingKernel2009} show that 
 \begin{equation*}
     \Phi: \calX \to \calW, \ \Phi^*: \calX \to \calW^*,
 \end{equation*}
-
-\noindent where we call $\Phi, \Phi^*$ the \textit{pair} of feature maps and $\calW, \calW^*$ the pair of feature spaces. Suppose that the span of the image of the feature maps under $\calX$ is dense in their respective feature spaces. That is,
+where we call $\Phi, \Phi^*$ the \textit{pair} of feature maps and $\calW, \calW^*$ the pair of feature spaces. Suppose that the span of the image of the feature maps under $\calX$ is dense in their respective feature spaces. That is,
 \begin{equation}
     \overline{\text{span}}\{\Phi(x): x \in \calX\} = \calW, \ \overline{\text{span}}\{\Phi^*(x): x \in \calX\} = \calW^*.
 \end{equation}
 
 Then, by~\parencite[Theorem 3]{zhangReproducingKernel2009}, the feature maps $\Phi, \Phi^*$ induce an RKBS defined by
-
 \begin{align}
     \calB &:= \set{f_w: x \mapsto (\Phi^*(x))(w), w \in \calW} \\
     \norm{f_w}_\calB &:= \norm{w}_\calW,
 \end{align}
-
-\noindent with the dual space $\calB^*$ defined by
+with the dual space $\calB^*$ defined by
 \begin{align}
     \calB^* &:= \set{f_{w^*}: x \mapsto w^*(\Phi(x)), w^* \in \calW^*} \\
     \norm{f_{w^*}}_{\calB^*} &:= \norm{w^*}_{\calW^*}.
@@ -77,23 +74,20 @@ Observe that for a RKBS with feature-map representation given by $\Phi, \Phi^*$,
 \begin{equation}
     K(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\calW}, \ x, y \in \calX,
 \end{equation}
-
-\noindent where $\paren{\cdot, \cdot}_{\calW}$ is the bilinear form on $\calW$ defined in~\Cref{eq:bilinear_form}.
+where $\paren{\cdot, \cdot}_{\calW}$ is the bilinear form on $\calW$ defined in~\Cref{eq:bilinear_form}.
 
 This form is reminiscent of the asymmetric inner product of neural networks,
 \begin{equation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ x, y \in \calX,
 \end{equation}
-\noindent where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. The following theorem states that when $\calB$ is an RKBS on $\calX$ with a feature map representation whose feature space $\calW$ is a Hilbert space, its reproducing kernel can be approximated by an asymmetric inner product of neural networks. The proof is similar to~\Cref{theoorem:asymemtric_inner_prod_rel_func_class}.
+where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. The following theorem states that when $\calB$ is an RKBS on $\calX$ with a feature map representation whose feature space $\calW$ is a Hilbert space, its reproducing kernel can be approximated by an asymmetric inner product of neural networks. The proof is similar to~\Cref{theoorem:asymemtric_inner_prod_rel_func_class}.
 
 \begin{theorem}\label{thm:asymmetric_inner_prod_approximates_rkbs}
    Suppose $\calX$ is a compact metric space. Suppose $r: \calX \times \calX \to \reals$ is the reproducing kernel of some RKBS $\calB$ on $\calX$ which admits a feature map representation with a feature space $\calW$ which is a Hilbert space. Consider the model,
-
    \begin{equation}
     \hat{r}(x, y) = \iprod{\phi_\theta(x)}{\psi_\theta(y)},
    \end{equation}
-
-   \noindent where $\phi, \psi: \calX \to \reals^{d}$ are multi-layer perceptrons. Then, for any $\varepsilon > 0$, there exists multi-layer perceptrons with parameters $\theta$ such that
+    where $\phi, \psi: \calX \to \reals^{d}$ are multi-layer perceptrons. Then, for any $\varepsilon > 0$, there exists multi-layer perceptrons with parameters $\theta$ such that
    \begin{equation*}
         \sup_{x,y \in \calX} \abs{r(x, y) - \hat{r}(x, y)} \leq \varepsilon
    \end{equation*}
@@ -137,7 +131,6 @@ This form is reminiscent of the asymmetric inner product of neural networks,
     \end{equation}
 
     Now, let the MLPs $\phi_\theta, \psi_\theta$ be functions from $\calX$ to $\reals^{d}$ (i.e., we specify the architecture of the MLPs such that the output space is $d$-dimensional). Let $\paren{(\Phi(x))_1, \ldots, (\Phi(x))_{d}}$ be the function to be approximated by the MLP $\phi_\theta$ and let $\paren{(\sigma(\Phi^*(y)))_1, \ldots, (\sigma(\Phi^*(y)))_{d}}$ be the function to be approximated by the MLP $\psi_\theta$. By universal approximation results on MLPs (e.g.,~\parencite{barronUniversalApproximation1993, cybenkoApproximationSuperpositions1989, hornikMultilayerFeedforward1989}), for any $\tilde{\varepsilon} > 0$, there exists parameters $\theta$ such that,
-
     \begin{equation}\label{eq:thm1_proof_eq2}
         \sup_{x \in \calX} \abs{(\phi_\theta(x))_i - (\Phi(x))_{i}} < \tilde{\varepsilon} \ \text{ and } \ \sup_{x \in \calX} \abs{(\psi_\theta(y))_i - (\sigma(\Phi^*(x)))_{i}} < \tilde{\varepsilon}, \ \forall i \in \set{1, \ldots, d}.
     \end{equation}
@@ -157,7 +150,6 @@ This form is reminiscent of the asymmetric inner product of neural networks,
     \end{align*}
 
     Let $\tilde{\varepsilon}$ in~\Cref{eq:thm1_proof_eq2} be small enough such that the above is smaller than $\varepsilon / 2$. This shows that
-
     \begin{equation*}
         \sup_{x,y \in \calX} \abs{r(x,y) - \tilde{r}_i(x,y)} \leq \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
     \end{equation*}

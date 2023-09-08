@@ -6,8 +6,7 @@ In the previous section we considered symmetric inner product relations where th
 \begin{equation}\label{eq:asymmetric_iprod_relation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)},
 \end{equation}
-
-\noindent where $\phi, \psi: \calX \to \reals^d$ are two neural networks.
+where $\phi, \psi: \calX \to \reals^d$ are two neural networks.
 
 In this section, we show that inner products of universal approximators (e.g., when $\phi, \psi$ are multi-layer perceptrons) can approximate any continuous function on $\calX \times \calX$.
 
@@ -51,11 +50,9 @@ With this result, we can show that any continuous function on $\calX \times \cal
     \begin{equation*}
         \sup_{x, y \in \calX} \abs{r(x,y) - r(q(x), q(y))} < \varepsilon / 2.
     \end{equation*}
-
     Since $\calN_\delta(\calX)$ is a finite set, by~\Cref{lemma:finite_space_rel}, there exists $d \in \bbN$ and $\phi, \psi: \calN_\delta(\calX) \to \reals^d$ such that $r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ \forall x,y \in \calN_\delta(\calX)$. Thus, $r(q(x), q(y)) = \iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)}, \ \forall x,y \in \calX$.  Now, we would like to approximate $\phi \circ q$ with $\phi_\theta$ and $\psi \circ q$ with $\psi_\theta$.
 
     For any $x, y \in \calX$, we have,
-
     \begin{equation*}
         \begin{split}
             &\abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\

@@ -40,42 +40,34 @@ The following result states that if $\phi$ is a universal approximator such as a
 	\begin{equation*}
 		\hat{r}(x, y) := \iprod{\phi_{\theta}(x)}{\phi_{\theta}(y)},
 	\end{equation*}
-
-    \noindent where $\phi_{\theta}: \calX \to \reals^d$ is a multi-layer perceptron with parameters $\theta$.
-
-	For any symmetric positive-definite kernel $r: \calX \times \calX \to \reals$, there exists a multi-layer perceptron with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over \((x,y) \in \mathcal{X}\times\mathcal{X}\). More precisely, for all \(\epsilon > 0\), there exists a neural network with parameters $\theta$ such that 
+	where $\phi_{\theta}: \calX \to \reals^d$ is a multi-layer perceptron with parameters $\theta$.
+	For any symmetric positive-definite kernel $r: \calX \times \calX \to \reals$, there exists a multi-layer perceptron with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over \((x,y) \in \mathcal{X}\times\mathcal{X}\). More precisely, for all \(\epsilon > 0\), there exists a neural network with parameters $\theta$ such that
     \[\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \hat{r}(x,y)}} < \epsilon.\]
 \end{theorem}
 
-% TODO: change j index to i index?
 \begin{proof}
 	\hphantom{~}
 
 	By Mercer's theorem \parencite{mercerFunctionsPositive1909, sunMercerTheorem2005, micchelliUniversalKernels2006}, there exists \((\psi_i)_{i \in \mathbb{N}}\), \(\lambda_i \geq 0\) such that \(r(x,y) = \sum_{i=1}^{\infty}{\lambda_i \psi_i(x) \psi_i(y)}\), where \(\psi_i\) and \(\lambda_i\) are eigenfunctions and eigenvalues of the integral operator
-
 	\begin{align*}
 		T_r&: L^2(\mathcal{X}) \to L^2(\mathcal{X}) \\
 		T_r(f) &= \int_{\mathcal{X}}{r(\cdot, x) f(x) dx}.
 	\end{align*}
-
 	Furthermore, the convergence of the series is uniform:
 	\begin{equation}
 		\lim_{n \to \infty} \sup_{x,y \in \mathcal{X}} \lvert r(x,y) - \sum_{i=1}^{n}{\lambda_i \psi_i(x) \psi_i(y) \rvert} = 0
 	\end{equation}
-
 	Let \(d\) be such that
 	\begin{equation}
 		\label{eq:proof_mercer_thm_unif_abs_cv}
 		\sup_{x,y \in \mathcal{X}} \left\lvert r(x,y) - \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)} \right\rvert < \frac{\epsilon}{2}.
 	\end{equation}
-
 	Let $d$ be the output dimension of \(\phi_\theta\) such that it maps from $\calX$ to $\reals^d$. Let \((\sqrt{\lambda_1} \psi_1, \ldots, \sqrt{\lambda_{d}} \psi_{d})\) be the function to be approximated by the neural network \(\phi_\theta\). By the universal approximation property of multi-layer perceptrons, for any \(\epsilon_1\), there exists a neural network with parameters \(\theta\) such that
 	\begin{equation}
 		\label{eq:proof_NN_UAP}
 		\sup_{x\in \mathcal{X}}{\abs{(\phi_\theta(x))_i - \sqrt{\lambda_i} \psi_i(x)}} < \epsilon_1, \ \forall i \in \{1, \ldots, d\},
 	\end{equation}
-
-    \noindent where $(\phi_\theta(x))_i$ is the \(i\)th component of $\phi_\theta(x)$. We refer to \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993} for results guaranteeing the existence of neural networks which can approximate any continuous function over a bounded domain.
+	where $(\phi_\theta(x))_i$ is the \(i\)th component of $\phi_\theta(x)$. We refer to \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993} for results guaranteeing the existence of neural networks which can approximate any continuous function over a bounded domain.
 
 	Now note that the approximation error for \(r\) is bounded by
 	\begin{equation}
