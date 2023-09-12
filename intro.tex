@@ -13,7 +13,7 @@ Inner products between neural network transformations of different objects appea
 \end{equation*}
 where $\phi_q, \phi_k$ are learned transformations and $\iprod{\phi_q(x_i)}{\phi_k(x_j)}$ represents some relation between $x_i$ and $x_j$ which determines how much $i$ should attend to $j$.
 
-The Transformer models relations implicitly through its attention mechanism. An example of an explicitly relational model which uses inner products to represent relations is CoRelNet~\parencite{kergNeuralArchitecture2022}, where a similarity matrix is computed consisting of (symmetric) inner products between each pair of objects, $\bra{R_{i,\cdot}}_{i=1}^m = \mathrm{Softmax}\paren{\bra{\iprod{\phi(x_i)}{\phi(x_j)}}_j}$.
+The Transformer models relations implicitly through its attention mechanism. An example of an explicitly relational model which uses inner products to represent relations is CoRelNet~\parencite{kergNeuralArchitecture2022}, where a similarity matrix is computed consisting of symmetric inner products between each pair of objects, $\bra{R_{i,\cdot}}_{i=1}^m = \mathrm{Softmax}\paren{\bra{\iprod{\phi(x_i)}{\phi(x_j)}}_j}$.
 
 Siamese networks are another domain where understanding the function classes of inner products of neural network transformations is relevant~\parencite[e.g.,][]{chopraLearningSimilarityMetric2005}. There, the relevant quantity is a distance between transformations of two objects. If the distance is the euclidean distance, then $\twonorm{\phi(x) - \phi(y)}^2 = \twonorm{\phi(x)}^2 + \twonorm{\phi(y)}^2 - 2 \iprod{\phi(x)}{\phi(y)}$, where again the inner product of neural networks is relevant.
 
