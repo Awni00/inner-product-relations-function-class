@@ -4,6 +4,8 @@
 
 \usepackage{mymathstyle}
 
+\interfootnotelinepenalty=10000 % prevent footnotes from being split across pages
+
 \usepackage[style=authoryear-comp,backend=biber]{biblatex}
 \addbibresource{references.bib}
 
@@ -18,7 +20,7 @@
 
 \input{intro.tex}
 
-% TODO: add discussion on examples of applications where symmetric vs asymemtric relations are appropriate. perhaps in a separate section.
+% TODO: add discussion on examples of applications where symmetric vs asymmetric relations are appropriate. perhaps in a separate section.
 \input{symmetric_relations.tex}
 \input{asymmetric_relations.tex}
 \input{reproducing_kernels_connection.tex}
