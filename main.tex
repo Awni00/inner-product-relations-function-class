@@ -1,32 +1,58 @@
-\documentclass{article}
+\documentclass[12pt,pdftex,noinfoline]{imsart}
 
-\usepackage[margin=1in]{geometry}
-
+\RequirePackage[OT1]{fontenc}
 \usepackage{mymathstyle}
 
-\interfootnotelinepenalty=10000 % prevent footnotes from being split across pages
 
+\makeatletter
+\let\c@author\relax
+\makeatother
 \usepackage[style=authoryear-comp,backend=bibtex]{biblatex}
 \addbibresource{references.bib}
 
-\title{Universal approximation of relation functions by inner products of neural networks}
-\author{Awni, John}
-\date{
-    Date created: September 2, 2023\\
-    Last edited: \today}
+\def\given{\,|\,}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\reals{\mathbb{R}}
+\let\what\widehat
+\let\tilde\widetilde
+\let\phi\varphi
+
+\renewcommand{\argmin}{\mathop{\rm argmin}}
+\newcommand{\ess}{\mathop{\rm ess}}
+\renewcommand{\argmax}{\mathop{\rm argmax}}
 
 \begin{document}
-\maketitle
+\def\snote#1{${}^{#1}$}
+\setlength{\parskip}{0.5em}
+\begin{frontmatter}
+{\bf\Large Universal approximation of relation functions\\[5pt] by inner products of neural networks}
+%\affil[**]{Department of Statistics and Data Science, Yale University}
+\begin{aug}
+\vskip15pt
+\address{
+\begin{tabular}{ccccc}
+{\normalsize\rm\bfseries Awni Altabaa}\snote{1} & {\normalsize\rm\bfseries John Lafferty}\snote{2}\\[5pt]
+\end{tabular}
+\vskip5pt
+\footnotetext{
+\snote{1}Department of Statistics and Data Science, Yale University; awni.altabaa@yale.edu.
+\snote{2}Department of Statistics and Data Science, Wu Tsai Institute, Institute for Foundations of Data Science, Yale University; john.lafferty@yale.edu.
+}
+\today
+\vskip10pt
+}
+\input{abstract}
+\end{aug}
+\end{frontmatter}
 
-\input{intro.tex}
-
-% TODO: add discussion on examples of applications where symmetric vs asymmetric relations are appropriate. perhaps in a separate section.
+\input{intro}
 \input{symmetric_relations.tex}
 \input{asymmetric_relations.tex}
 \input{reproducing_kernels_connection.tex}
 \input{discussion}
 
+\setlength\bibitemsep{7pt}
 \printbibliography
-
 
 \end{document}
