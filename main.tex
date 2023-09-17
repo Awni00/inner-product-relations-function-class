@@ -7,8 +7,39 @@
 \makeatletter
 \let\c@author\relax
 \makeatother
-\usepackage[style=authoryear-comp,backend=bibtex]{biblatex}
+\usepackage[
+    style=authoryear-comp,
+    doi=false,
+    url=false,
+    isbn=false,
+    eprint=false,
+    backend=bibtex]{biblatex}
 \addbibresource{references.bib}
+\renewbibmacro*{volume+number+eid}{%
+  \printfield{volume}%
+%  \setunit*{\adddot}% 
+  \setunit*{\addnbspace}% 
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+\usepackage{xpatch}
+\xpatchbibdriver{article}
+  {\usebibmacro{title}%
+   \newunit}
+  {\usebibmacro{title}%
+   \printunit{\addcomma\space}}
+  {}
+  {}
+\xpatchbibdriver{inproceedings}
+  {\usebibmacro{title}%
+   \newunit}
+  {\usebibmacro{title}%
+   \printunit{\addcomma\space}}
+  {}
+  {}
+\setlength\bibitemsep{7pt}
+\renewbibmacro{in:}{}
 
 \def\given{\,|\,}
 \def\P{\mathbb{P}}
@@ -54,7 +85,6 @@
 \input{reproducing_kernels_connection.tex}
 \input{discussion}
 
-\setlength\bibitemsep{7pt}
 \printbibliography
 
 \end{document}
