@@ -15,6 +15,9 @@ where $\phi_q, \phi_k$, and $\phi_v$ are learned transformations and $\iprod{\ph
 
 The Transformer models relations implicitly through its attention mechanism. An example of an explicitly relational model using inner products to represent relations is CoRelNet~\parencite{Kerg2022OnNA}, where a similarity matrix is computed consisting of symmetric inner products between each pair of objects, $\bra{R_{i,\cdot}}_{i=1}^m = \mathrm{Softmax}_j\paren{{\iprod{\phi(x_i)}{\phi(x_j)}}}$.
 
+% TODO: add references to RelConvNet and Abstractor?
+
 Siamese networks are another domain where understanding the function classes of inner products of neural network transformations is relevant~\parencite[e.g.,][]{chopraLearningSimilarityMetric2005}. There, the relevant quantity is a distance between transformations of two objects. If the distance is the Euclidean distance, then $\twonorm{\phi(x) - \phi(y)}^2 = \twonorm{\phi(x)}^2 + \twonorm{\phi(y)}^2 - 2 \iprod{\phi(x)}{\phi(y)}$, where again the inner product of neural networks arises.
 
+% universal approximation of feedforward neural networks has been extensively studied (e.g., classical references are ... Barron, Cybenko, etc.)
 In this paper we characterize the function class of inner products of neural networks, showing that inner products of neural networks are universal approximators for relation functions. In particular, when the inner product of neural networks is symmetric (i.e., $\phi=\psi$), the function class is the class of continuous positive definite kernels. When the inner product is asymmetric (i.e., $\phi \neq \psi$), the function class is the class of continuous functions on $\calX \times \calX$. The symmetric case is related to kernels of reproducing kernel Hilbert spaces whereas the asymmetric case admits a connection to kernels of reproducing kernel Banach spaces.
