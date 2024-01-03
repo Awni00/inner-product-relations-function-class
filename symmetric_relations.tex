@@ -37,12 +37,10 @@ Consider a symmetric positive definite kernel $K: \calX \times \calX \to \reals$
 	\begin{equation*}
 		\sup_{x, y \in \calX} \abs{K(x, y) - \sum_{i=1}^{d(\epsilon)} \lambda_i \psi_i(x) \psi_i(y)} \leq \epsilon.
 	\end{equation*}
-	Moreover, let $C(K) \coloneq \max_{i} \max_{x \in \calX} \abs{\sqrt{\lambda_i} \psi_i(x)}$.
+	Moreover, let $C(K, d) \coloneq \max_{i \in [d]} \max_{x \in \calX} \abs{\sqrt{\lambda_i} \psi_i(x)}$, and let $L(K, d) \coloneq \max_{i \in [d]} L_i$, where $L_i$ is the Lipschitz constant of $\sqrt{\lambda_i} \psi_i$.
 \end{definition}
 
-\comment{[To-Do] Need to define something like $L(r, d) = \max_{i \in [d]} \sqrt{\lambda_i} \mathtt{LipschitzConstant}(\psi_i)$ as maximum lipschitz constant of first $d$ eigenfunctions? Needed for universal approx result.}
-
-The quantity $d_K(\epsilon)$ associated with a kernel $K$ describes the number of eigenfunctions needed to describe $K$ up to an error of $\epsilon$. For any symmetric positive-definite kernel $K$, $d_K(\epsilon)$ is finite for any $\epsilon > 0$.
+The quantity $d_K(\epsilon)$ associated with a kernel $K$ describes the number of eigenfunctions needed to describe $K$ up to an error of $\epsilon$. For any symmetric positive-definite kernel $K$, $d_K(\epsilon)$ is finite for any $\epsilon > 0$. Similarly, the quantity $L(K, d)$ describes the level of ``regularity'' of the first $d$ eigenfunctions of $r$. Note that $C(K, d)$ is finite for any $d$ since $\calX$ is assumed compact and the eigenfunctions $\psi_i$ are continuous.
 
 Next, to state our result, we define notation which describes the efficiency of a universal function approximator on a space $\calX$.
 \begin{definition}[Efficiency of function approximator]\label{def:univ_approx_efficiency}
@@ -60,17 +58,18 @@ We are now ready to formally state our result.
 \begin{theorem}[Function class of symmetric inner product relational neural networks]\label{theorem:symmetric_inner_prod_rels_func_class}
 	\hphantom{~}
 
-	Suppose the data lies in a compact metric space \(\mathcal{X}\). Consider the relation model,
+	Suppose the data lies in a compact metric space $\mathcal{X}$. Consider the relation model,
 	\begin{equation*}
 		\hat{r}(x, y) := \iprod{\phi_{\theta}(x)}{\phi_{\theta}(y)},
 	\end{equation*}
-	where $\phi_{\theta}: \calX \to \reals^d$ is a multi-layer perceptron with parameters $\theta$.
-	For any symmetric positive-definite kernel $r: \calX \times \calX \to \reals$, there exists a multi-layer perceptron with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over \((x,y) \in \mathcal{X}\times\mathcal{X}\). More precisely, for all \(\epsilon > 0\), there exists a neural network with at most $d_r(\epsilon / 2) \cdot \calN_\calF\paren{\frac{\epsilon}{4 C(r) d_r(\epsilon / 2)}}$ neurons and parameters $\theta$ such that
+	where $\phi_{\theta}: \calX \to \reals^d$ is a multi-layer perceptron with parameters $\theta$. % Let $\calF$ be the space of $L(r, d_r(\epsilon/2))$-Lipschitz functions from $\calX$ to $\reals$.
+	Then, for any symmetric positive-definite kernel $r: \calX \times \calX \to \reals$, there exists a multi-layer perceptron with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over $(x,y) \in \mathcal{X}\times\mathcal{X}$. More precisely, for all $\epsilon > 0$, there exists a neural network with at most $d_r(\epsilon / 2) \cdot \calN_\calF\paren{\frac{\epsilon}{4 C(r) d_r(\epsilon / 2)}}$ neurons and parameters $\theta$ such that
     \[\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \hat{r}(x,y)}} < \epsilon.\]
+	Here, $\calF$ is the space of $L(r, d_r(\epsilon/2))$-Lipschitz functions from $\calX$ to $\reals$.
 \end{theorem}
 
 \begin{proof}
-	By Mercer's theorem~\parencite{mercerFunctionsPositive1909, sunMercerTheorem2005, micchelliUniversalKernels2006}, there exists \((\psi_i)_{i \in \mathbb{N}}\), \(\lambda_i \geq 0\) such that \(r(x,y) = \sum_{i=1}^{\infty}{\lambda_i \psi_i(x) \psi_i(y)}\), where \(\psi_i\) and \(\lambda_i\) are eigenfunctions and eigenvalues of the integral operator
+	By Mercer's theorem~\parencite{mercerFunctionsPositive1909, sunMercerTheorem2005, micchelliUniversalKernels2006}, there exists $(\psi_i)_{i \in \mathbb{N}}$, $\lambda_i \geq 0$ such that $r(x,y) = \sum_{i=1}^{\infty}{\lambda_i \psi_i(x) \psi_i(y)}$, where $\psi_i$ and $\lambda_i$ are eigenfunctions and eigenvalues of the integral operator
 	\begin{align*}
 		T_r&: L^2(\mathcal{X}) \to L^2(\mathcal{X}) \\
 		T_r(f) &= \int_{\mathcal{X}}{r(\cdot, x) f(x) dx}.
@@ -85,13 +84,13 @@ We are now ready to formally state our result.
 	\end{equation}
 	where $d_r(\epsilon/2)$ is defined as in~\Cref{def:sym_pd_ker_specturm_decay}.
 
-	Let $d \coloneqq d_r(\epsilon / 2)$ be the output dimension of the neural network \(\phi_\theta\) such that it maps from $\calX$ to $\reals^d$. The function to be approximated by $\phi_\theta$ is \((\sqrt{\lambda_1} \psi_1, \ldots, \sqrt{\lambda_{d}} \psi_{d})\), the first $d$ eigenfunctions of the kernel relation $r$. By the universal approximation property of multi-layer perceptrons, for any \(\epsilon_1 > 0\), there exists a neural network with parameters \(\theta\) such that
+	Let $d \coloneqq d_r(\epsilon / 2)$ be the output dimension of the neural network $\phi_\theta$ such that it maps from $\calX$ to $\reals^d$. The function to be approximated by $\phi_\theta$ is $(\sqrt{\lambda_1} \psi_1, \ldots, \sqrt{\lambda_{d}} \psi_{d})$, the first $d$ eigenfunctions of the kernel relation $r$. By the universal approximation property of multi-layer perceptrons, for any $\epsilon_1 > 0$, there exists a neural network with parameters $\theta$ such that
 	\begin{equation}\label{eq:proof_NN_UAP}
 		\sup_{x\in \mathcal{X}}{\abs{(\phi_\theta(x))_i - \sqrt{\lambda_i} \psi_i(x)}} < \epsilon_1, \ \forall i \in \{1, \ldots, d\},
 	\end{equation}
-	where $(\phi_\theta(x))_i$ is the \(i\)th component of $\phi_\theta(x)$. Moreover, using the notation defined in~\Cref{def:univ_approx_efficiency}, there exists such a neural network with at most $d \cdot \calN_\calF(\epsilon_1)$ neurons, where $\calF = \calC(\calX; \reals)$ is the set of continuous functions from $\calX$ to the real line. %Some classical results on universal approximation of neural networks are \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993}, which characterize $\calN_\calF(\epsilon_1)$. 
+	where $(\phi_\theta(x))_i$ is the $i$th component of $\phi_\theta(x)$. Moreover, using the notation defined in~\Cref{def:univ_approx_efficiency}, there exists such a neural network with at most $d \cdot \calN_\calF(\epsilon_1)$ neurons, where $\calF \coloneq \mathrm{Lip}(\calX, \reals; L(r, d_r(\epsilon/2)))$ is the set of $L(r, d_r(\epsilon/2))$-Lipschitz functions from $\calX$ to the real line. %Some classical results on universal approximation of neural networks are \parencite{hornikMultilayerFeedforward1989, cybenkoApproximationSuperpositions1989, barronUniversalApproximation1993}, which characterize $\calN_\calF(\epsilon_1)$. 
 
-	Now note that the approximation error for \(r\) is bounded by
+	Now note that the approximation error for $r$ is bounded by
 	\begin{equation}\label{eq:proof_approx_bound}
 		\begin{split}
 			\sup_{x, y \in \mathcal{X}}&{
@@ -103,7 +102,7 @@ We are now ready to formally state our result.
 				+ \left\lvert \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y) - (\phi_\theta(x))_i (\phi_\theta(y))_i} \right\rvert  \right) }
 		\end{split}
 	\end{equation}
-	The first term is bounded by \(\frac{\epsilon}{2}\) by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded uniformly on \(x,y\) by
+	The first term is bounded by $\frac{\epsilon}{2}$ by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded uniformly on $x,y$ by
 	\begin{equation*}
 		\begin{split}
 			&\left\lvert \left(\sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)}\right) - \langle \phi_\theta(x), \phi_\theta(y) \rangle \right\rvert  \\
@@ -137,13 +136,13 @@ We are now ready to formally state our result.
 
 The efficiency of neural network's in approximating arbitrary functions has been studied extensively. Different results can give different bounds on $\calN_\calF(\cdot)$. The following result follows from a particular bound obtained in~\parencite{poggioWhyWhenCan2017}.
 
-\begin{corollary}
-	Consider the setting of~\Cref{theoorem:asymemtric_inner_prod_rel_func_class} with the neural network $\phi_\theta$ a shallow neural network with ReLU activations,
+\begin{corollary}\label{cor:sym_iprod_kernel_neuron_bound}
+	Consider the setting of~\Cref{theorem:symmetric_inner_prod_rels_func_class} with the neural network $\phi_\theta$ a shallow neural network with ReLU activations,
 	\begin{equation*}
-		\phi_\theta(x) = \sum_{k=1}^{n} a_k \sigma(\iprod{w_k}{x} + b_k),
+		\phi_\theta(x) = \sum_{k=1}^{n} a_k \mathrm{ReLU}(\iprod{w_k}{x} + b_k),
 	\end{equation*}
-	where $a_k, b_k \in \reals$, $w_k \in \reals^{\mathrm{dim}(\calX)}$, and $\theta = (a_1, \ldots, a_n, b_1, \ldots, b_n, w_1, \ldots, w_n) \in \reals^{n (\mathrm{dim}(\calX) + 2)}$, and $n$ is the number of neurons. Then, there exists $\theta$ achieving $\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \hat{r}(x,y)}} < \epsilon$ in~\Cref{theorem:symmetric_inner_prod_rels_func_class} with a number of neurons $n$ of the order 
-	\[\calO\paren{d_r(\epsilon / 2) \cdot \paren{\frac{\epsilon}{4 C(r) d_r(\epsilon / 2)}}^{-\mathrm{dim}(\calX)}}.\]
+	where $a_k, b_k \in \reals$, $w_k \in \reals^{\mathrm{dim}(\calX)}$, and $\theta = (a_1, \ldots, a_n, b_1, \ldots, b_n, w_1, \ldots, w_n) \in \reals^{n (\mathrm{dim}(\calX) + 2)}$, and $n$ is the number of neurons. Then, there exists $\theta$ achieving $\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \hat{r}(x,y)}} < \epsilon$ in~\Cref{theorem:symmetric_inner_prod_rels_func_class} with a number of neurons $n$ of the order
+	\[\calO\paren{d_r(\epsilon / 2) \cdot \paren{\frac{\epsilon}{4 C(r) d_r(\epsilon / 2) L(r, d_r(\epsilon/2))}}^{-\mathrm{dim}(\calX)}}.\]
 \end{corollary}
 \begin{proof}
 	This follows by~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\parencite[Theorem 4]{poggioWhyWhenCan2017}.
@@ -151,6 +150,4 @@ The efficiency of neural network's in approximating arbitrary functions has been
 
 % TODO: double check that I'm interpreting . Sorting through the literature of universal approximation results is a bit of a challenge: they make different kinds of regularity assumptions (e.g., smoothness up to a certain order, etc) and sometimes have distribution-dependent rather than uniform bounds.
 
-\comment{[To-Do] add dependence on lipschitz constant to $\calO(\cdot)$?}
-
-The above analysis also holds for universal approximators other than feedforward neural networks, provided that the same uniform approximation property holds.
+Using the same analysis, we can obtain bounds for different regularity assumptions on the kernel eigenfunctions by using different universal approximation results. Similarly, we consider approximation under different norms (e.g., under distribution-specific norms). The above analysis also holds for universal approximators other than feedforward neural networks, provided that the same uniform approximation property holds.
