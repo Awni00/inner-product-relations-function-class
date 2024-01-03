@@ -1,13 +1,11 @@
 \section{Function class of symmetric inner product relations}\label{sec:symmetric_relations}
 
 Consider a symmetric relation $r: \calX \times \calX \to \reals$ modeled as the inner product of neural network encodings of a pair of inputs, $x, y \in \calX$,
-
 \begin{equation}\label{eq:symmetric_iprod_relation}
     r(x, y) = \iprod{\phi(x)}{\phi(y)},
 \end{equation}
 
 \noindent where $\phi$ is a neural network. Symmetric relation functions modeled in this way are natural \textit{measures of similarity}. Intuitively, $\phi$ extracts features of the objects $x,y$, and the inner product computes a measure of similarity between those features. To see this more formally, suppose we have a normalized inner product relation (i.e., $\phi: \calX \to \bbS^{d}$), then we have
-
 \begin{equation}
     \twonorm{\phi(x) - \phi(y)}^2 = 2 - 2 r(x, y).
 \end{equation}
