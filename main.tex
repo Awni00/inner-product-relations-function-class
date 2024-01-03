@@ -3,6 +3,21 @@
 \RequirePackage[OT1]{fontenc}
 \usepackage{mymathstyle}
 
+% region hyperref and link color options
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\newcommand\myshade{100}
+\colorlet{mylinkcolor}{RubineRed}
+\colorlet{mycitecolor}{Emerald}
+\colorlet{myurlcolor}{RoyalBlue}
+
+\hypersetup{
+  linkcolor  = mylinkcolor,
+  citecolor  = mycitecolor,
+  urlcolor   = myurlcolor,
+  colorlinks = true,
+}
+% endregion
 
 \makeatletter
 \let\c@author\relax
