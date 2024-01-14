@@ -18,9 +18,7 @@ We begin with the following simple lemma which states when the object space $\ca
 \end{lemma}
 
 \begin{proof}
-    \hphantom{~}
-
-    Let $x_1, \ldots, x_m$ be an enumerate of $\calX$ where $m = \abs{\calX}$. Let $R \in \reals^{m \times m}$ such that $R_{ij} = r(x_i, x_j)$. There exists many decompositions of the matrix $R$ which would induce valid encodings $\phi, \psi$. One example is rank decomposition. Let $d = \mathrm{rank}(R)$. Then, there exists matrices $P \in \reals^{m \times d}, Q \in \reals^{d \times m}$ such that $R = P Q$. Let $\phi, \psi: \calX \to \reals^{d}$ be defined by
+    Let $x_1, \ldots, x_m$ be an enumeration of $\calX$ where $m = \abs{\calX}$. Let $R \in \reals^{m \times m}$ such that $R_{ij} = r(x_i, x_j)$. There exists many decompositions of the matrix $R$ which would induce valid encodings $\phi, \psi$. One example is rank decomposition. Let $d = \mathrm{rank}(R)$. Then, there exists matrices $P \in \reals^{m \times d}, Q \in \reals^{d \times m}$ such that $R = P Q$. Let $\phi, \psi: \calX \to \reals^{d}$ be defined by
     \begin{equation}
         \phi(x_i) = P_{i, \cdot}, \ \psi(x_i) = Q_{\cdot, i}, \ \forall i \in [m].
     \end{equation}
@@ -42,8 +40,6 @@ With this result, we can show that any continuous function on $\calX \times \cal
 \end{theorem}
 
 \begin{proof}
-    \hphantom{~}
-
     Let $\calN_\delta(\calX)$ be a $\delta$-net of $\calX$. That is, a finite subset of $\calX$ such that $\max_{x \in \calX} \min_{y \in \calN_\delta(\calX)} \norm{x - y} < \delta$. Let $q$ be a projection from $\calX$ on to the $\delta$-net. That is, $q(x) \in \argmin_{y \in \calN_\delta(\calX)} \norm{x - y}$. By the continuity of $r$ and compactness of $\calX$, let $\delta > 0$ be small enough such that,
     \begin{equation*}
         \sup_{x, y \in \calX} \abs{r(x,y) - r(q(x), q(y))} < \varepsilon / 2.
@@ -75,5 +71,8 @@ Hence, we have,
     \end{split}
 \end{equation*}
 
-
 \end{proof}
+
+\begin{remark}
+    Note that the same analysis allows us to model any continuous relation function between two different spaces, $r: \calX \times \calY \to \reals$. We can similarly quantize both spaces (with different quantizers) and incorporate the quantizers in $\phi$ and $\psi$, respectively.
+\end{remark}
