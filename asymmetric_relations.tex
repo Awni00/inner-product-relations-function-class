@@ -28,7 +28,7 @@ We begin with the following simple lemma which states when the object space $\ca
 
 With this result, we can show that any continuous function on $\calX \times \calX$ can be approximated by inner products of neural networks (or other universal approximators). The argument proceeds by first quantizing the space $\calX$ and using~\Cref{lemma:finite_space_rel} to represent the relation function as an inner product of encodings. Then, a similar argument to~\Cref{theorem:symmetric_inner_prod_rels_func_class} shows the result.
 
-\begin{theorem}\label{theoorem:asymemtric_inner_prod_rel_func_class}
+\begin{theorem}\label{theorem:asymemtric_inner_prod_rel_func_class}
     Suppose $\calX$ is a compact subset of euclidean space. Consider the relation model,
     \begin{equation*}
         \hat{r}(x, y) := \iprod{\phi_\theta(x)}{\psi_\theta(y)},
@@ -76,3 +76,5 @@ Hence, we have,
 \begin{remark}
     Note that the same analysis allows us to model any continuous relation function between two different spaces, $r: \calX \times \calY \to \reals$. We can similarly quantize both spaces (with different quantizers) and incorporate the quantizers in $\phi$ and $\psi$, respectively.
 \end{remark}
+
+% \edit{[todo]: add bound on \# of neurons/parameters, etc. for asymmetric case}
