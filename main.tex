@@ -28,7 +28,8 @@
     url=false,
     isbn=false,
     eprint=false,
-    backend=bibtex]{biblatex}
+    backend=bibtex,
+natbib]{biblatex}
 \addbibresource{references.bib}
 \renewbibmacro*{volume+number+eid}{%
   \printfield{volume}%
@@ -65,6 +66,7 @@
 \let\tilde\widetilde
 \let\phi\varphi
 \let\epsilon\varepsilon
+\let\preceq\preccurlyeq
 
 \renewcommand{\argmin}{\mathop{\rm argmin}}
 \newcommand{\ess}{\mathop{\rm ess}}
@@ -98,6 +100,9 @@
 \input{symmetric_relations.tex}
 \input{asymmetric_relations.tex}
 \input{reproducing_kernels_connection.tex}
+
+\input{application_attention.tex}
+
 \input{discussion}
 
 \printbibliography
