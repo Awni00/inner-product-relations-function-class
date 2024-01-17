@@ -111,9 +111,9 @@ We are now ready to state our result, which says that inner product attention ca
 \end{proof}
 
 \begin{remark}
-    Note that the assumption that $\pprob{\min_{j \neq i} \aabs{u_q(x_i) - u_q(x_j)} > \eta_\epsilon} \geq 1 - \varepsilon$ simply says that the data distribution on $\calX \times \calX^n$ and the relevance preorder relations are such that there exists a ``most-relevant'' element in the context by a positive margin. This is a natural assumption since $\mathrm{Select}: \calX \times \calX^n \to \calX$ is only uniquely defined when a most-relevant element exists.
+    Note that the assumption that $\pprob{\min_{j \neq i} \aabs{u_q(x_i) - u_q(x_j)} > \eta_\epsilon} \geq 1 - \varepsilon$ simply says that the data distribution on $\calX \times \calX^n$ and the relevance preorder relations $\sset{\preceq_q}_q$ are such that there exists a ``most-relevant'' element in the context by a positive margin with high probability. This is a natural assumption since $\mathrm{Select}: \calX \times \calX^n \to \calX$ is only uniquely defined when a most-relevant element exists.
 \end{remark}
 
 \begin{remark}
-    The same construction works for a variable-size context, $\calX^* = \cup_{k=1}^n \calX^k$. Note that $\beta$ only needs to scale logarithmically in $n$. (Although, in general, $\eta_\epsilon$ also depends on $n$ since it depends on the data distribution.)
+    The same construction works for a variable-size context, $\calX^* \coloneq \cup_{k=1}^n \calX^k$. Note that $\beta$ only needs to scale logarithmically in the size of the maximal context size $n$. (Although, in general, $\eta_\epsilon$ also indirectly depends on $n$ through the data distribution.) Moreover, the scale of $\beta$ is not a restriction on the function class since it can be incorporated into the feature maps $\phi_\theta, \psi_\theta$.
 \end{remark}
