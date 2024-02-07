@@ -36,13 +36,19 @@
 \makeatother
 \usepackage[
     style=authoryear-comp,
+    sorting=nty,
+    sortcites=false,
+    maxbibnames=8,
     doi=false,
     url=false,
     isbn=false,
     eprint=false,
     backend=bibtex,
-natbib]{biblatex}
+    natbib
+    ]{biblatex}
 \addbibresource{references.bib}
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{day}}
 \renewbibmacro*{volume+number+eid}{%
   \printfield{volume}%
 %  \setunit*{\adddot}% 
