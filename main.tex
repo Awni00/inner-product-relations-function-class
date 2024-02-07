@@ -3,6 +3,17 @@
 \RequirePackage[OT1]{fontenc}
 \usepackage{mymathstyle}
 
+% region set up fixme and in-text annotations
+\usepackage{pdfcomment}
+\usepackage[draft, inline, nomargin, mode=multiuser, author=]{fixme}
+\fxloadlayouts{pdfcnote}
+\fxuseenvlayout{colorsig} % plain, signature, color, colorsig
+\fxusetargetlayout{changebar} % plain, changebar, color, colorcb
+\FXRegisterAuthor{aa}{anaa}{AA}
+\FXRegisterAuthor{jl}{anjl}{JL}
+\fxusetheme{colorsig}
+% endregion
+
 % region hyperref and link color options
 \usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
@@ -76,7 +87,7 @@ natbib]{biblatex}
 \def\snote#1{${}^{#1}$}
 \setlength{\parskip}{0.5em}
 \begin{frontmatter}
-{\bf\Large A note on universal approximation of \\inner products of neural networks for modeling relations}
+{\bf\Large A note on universal approximation of \\inner products of neural networks for modeling relations with applications to analyzing attention}
 %\affil[**]{Department of Statistics and Data Science, Yale University}
 \begin{aug}
 \vskip15pt
@@ -104,6 +115,8 @@ natbib]{biblatex}
 \input{application_attention.tex}
 
 \input{discussion}
+
+\listoffixmes
 
 \printbibliography
 
