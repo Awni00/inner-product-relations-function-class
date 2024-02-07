@@ -11,14 +11,14 @@ In this section, we show that inner products of universal approximators (e.g., w
 We begin with the following simple lemma which states when the object space $\calX$ is finite, any relation function can be represented as the inner product between two encodings.
 
 \begin{lemma}\label{lemma:finite_space_rel}
-    Suppose $\calX$ is a finite space. Let $r: \calX \times \calX \to \reals$ be any relation function. Then, there exists $d \in \bbN$ and $\phi, \psi : \calX \to \reals^{d}$ such that,
+    Suppose $\calX$ is a finite space. Let $r: \calX \times \calX \to \reals$ be any relation function. Then, there exists $d \leq \abs{\calX}$ and $\phi, \psi: \calX \to \reals^{d}$ such that,
     \begin{equation*}
         r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ \forall x, y \in \calX.
     \end{equation*}
 \end{lemma}
 
 \begin{proof}
-    Let $x_1, \ldots, x_m$ be an enumeration of $\calX$ where $m = \abs{\calX}$. Let $R \in \reals^{m \times m}$ such that $R_{ij} = r(x_i, x_j)$. There exists many decompositions of the matrix $R$ which would induce valid encodings $\phi, \psi$. One example is rank decomposition. Let $d = \mathrm{rank}(R)$. Then, there exists matrices $P \in \reals^{m \times d}, Q \in \reals^{d \times m}$ such that $R = P Q$. Let $\phi, \psi: \calX \to \reals^{d}$ be defined by
+    Let $x_1, \ldots, x_m$ be an enumeration of $\calX$ where $m = \abs{\calX}$. Let $R \in \reals^{m \times m}$ such that $R_{ij} = r(x_i, x_j)$. There exists many decompositions of the matrix $R$ which would induce valid encodings $\phi, \psi$. One example is rank decomposition. Let $d = \mathrm{rank}(R)$. Then, there exists matrices $P, Q \in \reals^{d \times m}$ such that $R = P^\top Q$. Let $\phi, \psi: \calX \to \reals^{d}$ be defined by
     \begin{equation}
         \phi(x_i) = P_{i, \cdot}, \ \psi(x_i) = Q_{\cdot, i}, \ \forall i \in [m].
     \end{equation}
@@ -26,55 +26,64 @@ We begin with the following simple lemma which states when the object space $\ca
     Then, $r(x, y) = \iprod{\phi(x)}{\psi(y)}$ for all $x, y \in \calX$.
 \end{proof}
 
-With this result, we can show that any continuous function on $\calX \times \calX$ can be approximated by inner products of neural networks (or other universal approximators). The argument proceeds by first quantizing the space $\calX$ and using~\Cref{lemma:finite_space_rel} to represent the relation function as an inner product of encodings. Then, a similar argument to~\Cref{theorem:symmetric_inner_prod_rels_func_class} shows the result.
+Note that if each $x \in \calX$ is a one-hot vector in $\reals^{\abs{\calX}}$, then the result above holds with linear maps $\phi, \psi$. Although very simple, this result has direct implications to domains such as language modeling where $\calX$ is a discrete set of tokens, and hence finite. In such cases,~\Cref{lemma:finite_space_rel} tells us that any relation function can be approximated by inner products of feature maps (i.e., of the form present in the attention mechanisms of Transformers). Moreover, in the case of language, there may be a low-rank structure depending on syntax, semantics, etc., enabling a more modest dimension of the feature maps, $d \ll \abs{\calX}$.
 
-\begin{theorem}\label{theorem:asymemtric_inner_prod_rel_func_class}
-    Suppose $\calX$ is a compact subset of euclidean space. Consider the relation model,
+Next, we proceed to show that arbitrary continuous relation functions on $\calX \times \calX$ compact euclidean spaces can be approximated by inner products of two different neural networks. As before, we assume $\calX = [0, 1]^{d}$, where $d = \mathrm{dim}(\calX)$.
+
+\textbf{Preliminaries.} Let $\calR(\delta) = \sset{R_1, \ldots, R_{\aabs{\calR}}}$ be a partition of $\calX$ into rectangles $R_i = \times_{j=1}^{d} [a_j^i, b_j^i)$ such that $\mathrm{diam}(R_i) \leq \delta$ for all $i$. Note that such partition exists with $\delta^{-d}$ rectangles. Let $\norm{\cdot}_\calF$ be a norm on the space of functions from $\calX$ to $\reals$. In particular, we consider the sup-norm $\nnorm{f(\cdot)}_\calF = \sup_{x \in \calX} \abs{f(x)}$ or $L^p$-norms $\nnorm{f(\cdot)}_\calF = \pparen{\int_\calX \abs{f(x)}^p d\mu(x)}^{1/p}$ for some probability measure $\mu$. We denote the corresponding norm on functions from $\calX \times \calX$ to $\reals$ as $\nnorm{f(\cdot)}_{\calF^\otimes 2}$, defined as in~\Cref{sec:symmetric_relations}.
+
+Now consider the quantization function which maps $\calX$ to a one of the rectangles in $\calR$. In particular, for a partition of rectangles $\calR(\delta)$, let $q_\delta: \calX \to \reals^{\aabs{\calR}}$ be defined as $q_\delta = \pparen{\bm{1}_{R_1}, \ldots, \bm{1}_{R_{\aabs{\calR}}}}$. That is, for each dimension, it is the indicator of whether the input lies in the corresponding rectangle. We will be interested in approximating $q_\delta$ by a neural network. For a class of neural networks $\calV_N$ with complexity (i.e., total number of units) $N$, let $\mathrm{dist}(q_\delta, \calV_N) = \inf_{h \in \calV_N} \nnorm{q_\delta - h}_\calF$. Let $\calN(\epsilon) \in \naturals$ be the integer such that $\mathrm{dist}(q_\delta, \calV_N) \leq \epsilon$ if $N \geq \calN(\epsilon; \calV)$. We assume that $\calV_N \subset \calV_{N+1}$.
+
+\begin{theorem}
+    Suppose the relation function $r: \calX \times \calX \to \reals$ is continuous. In particular, for any $\epsilon > 0$, there exists $\delta(\epsilon) > 0$ such that for any $x, y, \tilde{x}, \tilde{y}$ satisfying $\infnorm{x - \tilde{x}} \leq \delta$, $\infnorm{y - \tilde{y}} \leq \delta$, we have $\abs{r(x, y) - r(\tilde{x}, \tilde{y})} \leq \epsilon$. Then, for any approximation error $\epsilon > 0$ there exists multi-layer perceptrons $\phi, \psi$ such that
     \begin{equation*}
-        \hat{r}(x, y) := \iprod{\phi_\theta(x)}{\psi_\theta(y)},
+        \norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \epsilon.
     \end{equation*}
-    \noindent where $\phi_\theta, \psi_\theta: \calX \to \reals^d$ are multi-layer perceptrons with parameters $\theta$. Then, for any continuous relation function $r: \calX \times \calX \to \reals$ there exists multi-layer perceptrons with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over $(x,y) \in \calX \times \calX$. Formally, for any $\epsilon > 0$, there exists neural networks with parameters $\theta$ such that,
-    \begin{equation*}
-        \sup_{x, y \in \calX} \abs{r(x,y) - \hat{r}(x,y)} < \epsilon.
-    \end{equation*}
+    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \hat{q}$, $\psi = L_\psi \circ \hat{q}$ where $\hat{q} \in \calV_N$ is a shared MLP with $N$ neurons and $L_\phi, L_\psi$ are linear projections onto $\delta^{-d}$-dimensional space. The number of neurons is bounded by $N = \calN(\tilde{\epsilon}; \calV)$, where $\tilde{\epsilon} \coloneq \pparen{\sqrt{2 \delta^{-d} R_\infty (2 R_\infty + \epsilon)} - 2 \delta^{-d / 2} R_\infty} \pparen{2 \delta^{-d} R_\infty}^{-1}$, and $\delta = \delta(\epsilon / 2)$.
+
 \end{theorem}
-
 \begin{proof}
-    Let $\calN_\delta(\calX)$ be a $\delta$-net of $\calX$. That is, a finite subset of $\calX$ such that $\max_{x \in \calX} \min_{y \in \calN_\delta(\calX)} \norm{x - y} < \delta$. Let $q$ be a projection from $\calX$ on to the $\delta$-net. That is, $q(x) \in \argmin_{y \in \calN_\delta(\calX)} \norm{x - y}$. By the continuity of $r$ and compactness of $\calX$, let $\delta > 0$ be small enough such that,
+    Let $\delta = \delta(\epsilon / 2)$, and let $\calR(\delta) = {R_1, \ldots, R_{\abs{\calX}}}$ be a partition of $\calX$ into rectangles, with $\abs{\calR} \leq \delta^{-d}$. Recall that $q_\delta$ is defined as the quantizer of $\calX$ defined in terms of indicators of the rectangles in $\calR$. Let $N = \calN(\tilde{\epsilon}; \calV)$ and let $\hat{q}_\delta \in \calV_N$ be a neural network such that $\norm{\hat{q}_\delta - q_\delta}_\calF \leq \tilde{\epsilon}$, where $\tilde{\epsilon} > 0$ will be determined later. Let $x_1, \ldots, x_{\aabs{\calR}}$ be the midpoints of the rectangles in $\calR$ such that $x_i \in R_i,\, i \in [\aabs{\calR}]$. Let $R \in \reals^{\aabs{\calR} \times \aabs{\calR}}$ be defined by $\bbra{R}_{ij} = r(x_i, x_j)$. We have that $R = P^\top Q,\, P,Q \in \reals^{r \times \aabs{\calR}}$ for some $r \leq \delta^{-d}$.
+
+    Let $\phi = P \circ \hat{q}_\delta$ and $\psi = Q \circ \hat{q}_{\delta}$. We will show that the inner product of neural networks $\iprod{\phi(x)}{\psi(y)}$ approximates $r(x, y)$. For convenience, we denote $q_\delta(x)$ by $q_\delta(x)$ and $\hat{q}_\delta(x)$ by $\hat{q}_\delta(x)$ in the calculation below.
+    \begin{align*}
+        &\norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \\
+        &\leq \norm{r(x, y) - r(q_\delta(x), q_\delta(y))}_{\calF^{\otimes 2}} + \norm{r(q_\delta(x), q_\delta(y)) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}}\\
+        &\stepa{\leq} \frac{\epsilon}{2} + \norm{q_{\delta}(x)^\top R\, q_{\delta}(y) - \hat{q}_{\delta}(x)^\top R\, \hat{q}_{\delta}(y)}_{\calF^{\otimes 2}}\\
+        &\stepb{\leq} \frac{\epsilon}{2} + \norm{(q_\delta(x) - \hat{q}_\delta(x))^\top R\, q_\delta(y)}_{\calF^{\otimes 2}} + \norm{\hat{q}_\delta(x)^\top R\, (q_\delta(y) - \hat{q}_\delta(y))}_{\calF^{\otimes 2}}
+    \end{align*}
+    In the above, step (a) is by the assumption of continuity of $r: \calX \times \calX \to \reals$ and the definition of the matrix $R$ and the quantizer $q_\delta$. Step (b) is the triangle inequality.
+
+    We proceed to bound each of the two terms above. The first term is bounded as follows
+    \begin{align*}
+        \abs{(q_\delta(x) - \hat{q}_\delta(x))^\top R\, q_\delta(y)} &\leq \twonorm{q_\delta(x) - \hat{q}_\delta(x)} \twonorm{q_\delta(y)} \norm{R}_{2 \mapsto 2}\\
+        &\leq \twonorm{q_\delta(x) - \hat{q}_\delta(x)} \delta^{-\delta_\calX} R_\infty,
+    \end{align*}
+    where we define $R_\infty \coloneq \max_{x,y} \aabs{r(x,y)}$ and the second inequality follows by noting that the two-norm of a matrix $A \in\reals^{m \times n}$ is bounded by $\norm{A}_{2 \mapsto 2} \leq \sqrt{m n} \norm{A}_{\max}$. The second term is bounded by first noting that
+    \begin{align*}
+        \abs{\hat{q}_\delta(x)^\top R\, (q_\delta(y) - \hat{q}_\delta(y))} &\leq \twonorm{\hat{q}_\delta(x)^\top R} \twonorm{q_\delta(y) - \hat{q}_\delta(y)} \\
+        &\leq \paren{\twonorm{(\hat{q}_\delta(x) - q_\delta(x))^\top R} + \twonorm{q_\delta(x) R}} \twonorm{q_\delta(y) - \hat{q}_\delta(y)}\\
+        &\leq \paren{\norm{R}_{2 \mapsto 2} \twonorm{\hat{q}_\delta(x) - q_\delta(x)}+ \max_i \twonorm{R_{i\cdot}}} \twonorm{q_\delta(y) - \hat{q}_\delta(y)}\\
+        &\leq \delta^{-d} R_\infty \twonorm{\hat{q}_\delta(x) - q_\delta(x)} \twonorm{q_\delta(y) - \hat{q}_\delta(y)} + \delta^{-d / 2} R_\infty \twonorm{q_\delta(y) - \hat{q}_\delta(y)}.
+    \end{align*}
+    Hence,
+    \begin{align*}
+        \norm{\hat{q}_\delta(x)^\top R\, (q_\delta(y) - \hat{q}_\delta(y))}_{\calF^{\otimes 2}} &\leq  \delta^{-d} R_\infty \norm{\twonorm{\hat{q}_\delta - q_\delta}}_{\calF}^2 + \delta^{-d / 2} R_\infty \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}.
+    \end{align*}
+
+    Putting this together and continuing with the bound, we obtain
+    \begin{align*}
+        &\norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + 2 \delta^{- d_{\calX} / 2} R_\infty \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} + \delta^{- d_{\calX}} R_\infty \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}^2\\
+    \end{align*}
+
+    Next, we choose the neural network complexity $N$ such that the above is bounded by $\epsilon$. Vt considering the above as a quadratic in $\norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}$, we observe that this holds when
     \begin{equation*}
-        \sup_{x, y \in \calX} \abs{r(x,y) - r(q(x), q(y))} < \varepsilon / 2.
+        \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} \in \Big(0, \frac{\sqrt{2 \delta^{-d} R_\infty (2 R_\infty + \epsilon)} - 2 \delta^{-d / 2} R_\infty}{2 \delta^{-d} R_\infty} \Big].
     \end{equation*}
-    Since $\calN_\delta(\calX)$ is a finite set, by~\Cref{lemma:finite_space_rel}, there exists $d \in \bbN$ and $\phi, \psi: \calN_\delta(\calX) \to \reals^d$ such that $r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ \forall x,y \in \calN_\delta(\calX)$. Thus, $r(q(x), q(y)) = \iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)}, \ \forall x,y \in \calX$.  Now, we would like to approximate $\phi \circ q$ with $\phi_\theta$ and $\psi \circ q$ with $\psi_\theta$.
-
-    For any $x, y \in \calX$, we have,
-    \begin{equation*}
-        \begin{split}
-            &\abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
-            &= \abs{\sum_{i=1}^{d} \paren{((\phi \circ q)(x))_i ((\psi \circ q)(y))_i - (\phi_\theta(x))_i (\psi_\theta(y))_i}} \\
-            &\leq \sum_{i=1}^{d} \abs{((\phi \circ q)(x))_i ((\psi \circ q)(y))_i - (\phi_\theta(x))_i (\psi_\theta(y))_i} \\
-        &\leq \sum_{i=1}^d \paren{ \abs{(\phi_\theta(x))_i} \abs{((\psi \circ q)(y))_i - (\psi_\theta(y))_i} + \abs{(\psi_\theta(y))_i} \abs{((\phi \circ q)(x))_i - (\phi_\theta(x))_i}} \\
-    \end{split}
-\end{equation*}
-
-Note that $\phi \circ q$ and $\psi \circ q$ are continuous (in fact, piecewise constant) functions on a compact euclidean space $\calX$. By the universal approximation of multi-layer perceptrons, there exists $\theta$ such that
-\begin{equation*}
-    \sup_{x, y \in \calX} \abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} < \frac{\varepsilon}{2}
-\end{equation*}
-
-Hence, we have,
-\begin{equation*}
-    \begin{split}
-        &\sup_{x, y \in \calX} \abs{r(x, y) - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
-        &\leq \sup_{x, y \in \calX} \abs{r(x, y) - r(q(x), q(y))} + \sup_{x, y \in \calX} \abs{r(q(x), q(y)) - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
-        &\leq  \sup_{x, y \in \calX} \abs{r(x, y) - r(q(x), q(y))} + \sup_{x, y \in \calX} \abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}}  \\
-        &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
-    \end{split}
-\end{equation*}
-
+    This can be seen by considering the quadratic function in. Hence, letting $\tilde{\epsilon} \coloneq \frac{\sqrt{2 \delta^{-d} R_\infty (2 R_\infty + \epsilon)} - 2 \delta^{-d / 2} R_\infty}{2 \delta^{-d} R_\infty}$ and $N = \calN(\tilde{\epsilon}; \calV)$, there exists a neural network $\hat{q}_\delta \in \calV_N$ such that
+    \begin{align*}
+        \norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \epsilon
+    \end{align*}
 \end{proof}
 
-\begin{remark}
-    Note that the same analysis allows us to model any continuous relation function between two different spaces, $r: \calX \times \calY \to \reals$. We can similarly quantize both spaces (with different quantizers) and incorporate the quantizers in $\phi$ and $\psi$, respectively.
-\end{remark}
-
-% \edit{[todo]: add bound on \# of neurons/parameters, etc. for asymmetric case}
+\aawarning{[TODO]: add corollary based on approximating indicators of rectangles.}
