@@ -54,6 +54,8 @@ Note that by~\Citeauthor{debreuRepresentationPreferenceOrdering1954}'s represent
 
 We are now ready to state our result, which says that inner product attention can approximate any selection function of the form in~\Cref{eq:def_select}, provided the family of relevance preorders $\sset{\preceq_q}_q$ satisfies the two natural regularity conditions stated above.
 
+\aawarning{[TODO] update attention analysis section according to updates of asymmetric result.}
+
 \begin{theorem}[Attention can approximate arbitrary information selection functions]
     Let $\sset{\preceq_q}_q$ be a family of relevance preorders which satisfy the query continuity and key continuity assumptions~\Cref{ass:key_cts,ass:query_cts}. Suppose that for all $\varepsilon > 0$, there exists $\eta_\epsilon > 0$ such that, $\pprob{\min_{j \neq i} \aabs{u_q(x_i) - u_q(x_j)} > \eta_\epsilon} \geq 1 - \varepsilon$.
     Then, there exists MLPs $\phi_\theta, \psi_\theta$ such that dot-product attention (\Cref{eq:def_attention}) approximates $\mathrm{Select}: \calX \times \calX^n \to \calX$ (as defined in~\Cref{eq:def_select}) arbitrarily well. Formally, for any $\epsilon > 0$, there exists MLPs $\phi_\theta, \psi_\theta$ such that with $\beta = \calO\paren{\eta_\epsilon^{-1} \log\paren{\epsilon^{-1} n \max_{x \in \calX} \norm{x}}}$, we have,
