@@ -80,7 +80,11 @@ This form is reminiscent of the asymmetric inner product of neural networks,
 \begin{equation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ x, y \in \calX,
 \end{equation}
-where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. The following theorem states that when $\calB$ is an RKBS on $\calX$ with a feature map representation whose feature space $\calW$ is a Hilbert space, its reproducing kernel can be approximated by an asymmetric inner product of neural networks. The proof is similar to~\Cref{theorem:asymemtric_inner_prod_rel_func_class}.
+where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. We will show that asymmetric inner products of neural networks can approximate any reproducing kernel of an RKBS. 
+
+Recall that any two Hilbert spaces with equal dimensions are isometrically isomorphic. Hence, First, note that, by the Riesz representation theorem, there exists a unique element $u_{\Phi^*(y)} \in \ell^2(\bbN)$.
+
+The following theorem states that when $\calB$ is an RKBS on $\calX$ with a feature map representation whose feature space $\calW$ is a Hilbert space, its reproducing kernel can be approximated by an asymmetric inner product of neural networks. The proof is similar to~\Cref{theorem:symmetric_inner_prod_rels_func_class}.
 
 \begin{theorem}\label{thm:asymmetric_inner_prod_approximates_rkbs}
    Suppose $\calX$ is a compact metric space. Suppose $r: \calX \times \calX \to \reals$ is the reproducing kernel of some RKBS $\calB$ on $\calX$ which admits a feature map representation with a feature space $\calW$ which is a Hilbert space. Consider the model,
@@ -104,7 +108,7 @@ where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. The 
         r(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\ell^2(\bbN)} \equiv (\Phi^*(y))(\Phi(x)), \ x, y \in \calX.
     \end{equation*}
 
-    By the Riesz representation theorem~\parencite{riesz_citation}, there exists a unique element in $u_{\Phi^*(y)} \in \ell^2(\bbN)$ such that,
+    By the Riesz representation theorem, there exists a unique element in $u_{\Phi^*(y)} \in \ell^2(\bbN)$ such that,
     \begin{equation*}
         (\Phi^*(y))(w) = \iprod{w}{u_{\Phi^*(y)}}_{\ell^2(\bbN)}, \ \forall w \in \ell^2(\bbN).
     \end{equation*}
