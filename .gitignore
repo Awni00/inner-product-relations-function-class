@@ -10,3 +10,6 @@
 *.xml
 *.fdb_latexmk
 *.fls 
+*.cb
+*.cb2
+*.lox
