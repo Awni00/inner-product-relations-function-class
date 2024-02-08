@@ -41,7 +41,7 @@ The following theorem states that any continuous relation function can be approx
     \begin{equation*}
         \norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \epsilon.
     \end{equation*}
-    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \hat{q}$, $\psi = L_\psi \circ \hat{q}$ where $\hat{q} \in \calV_N$ is a shared MLP with $N$ neurons and $L_\phi, L_\psi$ are linear projections onto $\delta^{-d}$-dimensional space. The number of neurons is bounded by $N = \calN(\tilde{\epsilon}; \calV)$, where $\tilde{\epsilon} = \calO\pparen{R_{\max}^{-1/2} \delta^{d/2} \epsilon^{1/2}}$, %\pparen{\sqrt{2 \delta^{-d} R_{\max} (2 R_{\max} + \epsilon)} - 2 \delta^{-d / 2} R_{\max}} \pparen{2 \delta^{-d} R_{\max}}^{-1}$,
+    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \hat{q}$, $\psi = L_\psi \circ \hat{q}$ where $\hat{q} \in \calV_N$ is a shared MLP with $N$ neurons and $L_\phi, L_\psi$ are linear projections onto $\delta^{-d}$-dimensional space. The number of neurons is bounded by $N = \calN(\tilde{\epsilon}; \calV)$, where $\tilde{\epsilon} = \pparen{\sqrt{2 \delta^{-d} R_{\max} (2 R_{\max} + \epsilon)} - 2 \delta^{-d / 2} R_{\max}} \pparen{2 \delta^{-d} R_{\max}}^{-1}$,
     $R_{\max} \coloneq \max_{x,y} r(x,y)$, and $\delta = \delta(\epsilon / 2)$.
 \end{theorem}
 \begin{proof}
@@ -75,7 +75,7 @@ The following theorem states that any continuous relation function can be approx
 
     Putting this together and continuing with the bound, we obtain
     \begin{align*}
-        &\norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + 2 \delta^{- d / 2} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} + \delta^{- d} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}^2\\
+        &\norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + 2 \delta^{- d / 2} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} + \delta^{- d} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}^2.
     \end{align*}
 
     Next, we choose the neural network complexity $N$ such that the above is bounded by $\epsilon$. Vt considering the above as a quadratic in $\norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}$, we observe that this holds when
@@ -83,11 +83,28 @@ The following theorem states that any continuous relation function can be approx
         \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} \in \Big(0, \frac{\sqrt{2 \delta^{-d} R_{\max} (2 R_{\max} + \epsilon)} - 2 \delta^{-d / 2} R_{\max}}{2 \delta^{-d} R_{\max}} \Big].
     \end{equation*}
     This can be seen by considering the quadratic function in the error $\nnorm{\twonorm{q_\delta - \hat{q}_\delta}}_\calF$ and finding values for which the overall error is bounded by $\epsilon$. Hence, letting
-    \[\tilde{\epsilon} \coloneq \frac{\sqrt{2 \delta^{-d} R_{\max} (2 R_{\max} + \epsilon)} - 2 \delta^{-d / 2} R_{\max}}{2 \delta^{-d} R_{\max}} = \calO \paren{\sqrt{\frac{\delta^d\, \epsilon}{R_{\max}}}}\]
+    \[\tilde{\epsilon} \coloneq \frac{\sqrt{2 \delta^{-d} R_{\max} (2 R_{\max} + \epsilon)} - 2 \delta^{-d / 2} R_{\max}}{2 \delta^{-d} R_{\max}}\]
     and $N = \calN(\tilde{\epsilon}; \calV)$, there exists a neural network $\hat{q}_\delta \in \calV_N$ such that
     \begin{align*}
         \norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \epsilon
     \end{align*}
 \end{proof}
+
+\aanote*{An alternate bound on $\tilde{\epsilon}$... more interpretable but less tight. should we use this instead?}{
+Consider the proof starting from here...
+\begin{equation*}
+    \norm{r(x,y) - \iprod{\phi(x)}{\psi(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + 2 \delta^{- d / 2} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF} + \delta^{- d} R_{\max} \norm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}^2
+\end{equation*}
+We will try to get a different, more interpretable bound on $\tilde{\epsilon}$. Let $\tilde{\epsilon} := \nnorm{\twonorm{q_\delta - \hat{q}_\delta}}_{\calF}$ and consider the quadratic $2 \delta^{-d/2} R_{\max} \tilde{\epsilon} + \delta^{-d} R_{\max} \tilde{\epsilon}^2 + \epsilon / 2$. We want to find values of $\tilde{\epsilon}$ such that this is bounded by $\epsilon$.
+
+Assume that $\delta = \min(\delta(\epsilon / 2), 1)$ and $\tilde{\epsilon} \leq 1$. Then,
+\begin{align*}
+    2 \delta^{-d/2} R_{\max} \tilde{\epsilon} + \delta^{-d} R_{\max} \tilde{\epsilon}^2 + \epsilon / 2 &\leq 2 \delta^{-d/2} R_{\max} \tilde{\epsilon} + \delta^{-d} R_{\max} \tilde{\epsilon} + \epsilon / 2\\
+    &\leq 2 \delta^{-d} R_{\max} \tilde{\epsilon} + \delta^{-d} R_{\max} \tilde{\epsilon} + \epsilon / 2\\
+    &= 3 \delta^{-d} R_{\max} \tilde{\epsilon} + \epsilon / 2
+\end{align*}
+where the first inequality is since $\tilde{\epsilon} \leq 1$ and the second is because $\delta \leq 1$. Hence, the expression is less than $\epsilon$ when $\tilde{\epsilon} = \min((6 R_{\max})^{-1} \delta^d \epsilon, 1)$.
+
+}
 
 \aawarning{[TODO]: add corollary based on approximating indicators of rectangles.}
