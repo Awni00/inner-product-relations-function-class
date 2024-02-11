@@ -6,6 +6,7 @@
 % region set up fixme and in-text annotations
 \usepackage{pdfcomment}
 \usepackage[draft, inline, nomargin, mode=multiuser, author=]{fixme}
+\usepackage[us]{datetime}
 \fxloadlayouts{pdfcnote}
 \fxuseenvlayout{colorsig} % plain, signature, color, colorsig
 \fxusetargetlayout{changebar} % plain, changebar, color, colorcb
@@ -13,6 +14,7 @@
 \FXRegisterAuthor{jl}{anjl}{JL}
 \fxusetheme{colorsig}
 \fxsetface{margin}{\scriptsize}
+
 % endregion
 
 % region hyperref and link color options
@@ -90,11 +92,15 @@
 \newcommand{\ess}{\mathop{\rm ess}}
 \renewcommand{\argmax}{\mathop{\rm argmax}}
 
+\parskip12pt
+\parindent0pt 
+
 \begin{document}
 \def\snote#1{${}^{#1}$}
 \setlength{\parskip}{0.5em}
 \begin{frontmatter}
-{\bf\Large A note on universal approximation of \\inner products of neural networks for modeling relations with applications to analyzing attention}
+%{\bf\Large A note on universal approximation of \\inner products of neural networks for modeling relations with applications to analyzing attention}
+{\bf\Large Approximation of relation functions and attention mechanisms}
 %\affil[**]{Department of Statistics and Data Science, Yale University}
 \begin{aug}
 \vskip15pt
