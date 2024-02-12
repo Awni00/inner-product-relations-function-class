@@ -35,7 +35,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
     \begin{equation*}
         \abs{r(x,y) - \iprod{\phi(x)}{\psi(y)}} \leq \epsilon, \quad \text{Lebesgue-almost everywhere.}
     \end{equation*}
-    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \eta$, $\psi = L_\psi \circ \eta$ where $\eta \in \calV_N$ is a shared 2-layer MLP with $N = \calO(\delta^{- 2 \,\mathrm{dim}(\calX)})$ neurons and $L_\phi, L_\psi$ are linear projections onto $n$-dimensional space, with $n = \calO(\delta^{- \mathrm{dim}(\calX)})$ and $\delta = \delta(\epsilon)$.
+    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \eta$, $\psi = L_\psi \circ \eta$ where $\eta$ is a shared 2-layer MLP with $N = \calO(\delta^{- 2 \,\mathrm{dim}(\calX)})$ neurons and $L_\phi, L_\psi$ are linear projections onto $n$-dimensional space, with $n = \calO(\delta^{- \mathrm{dim}(\calX)})$ and $\delta = \delta(\epsilon)$.
 \end{theorem}
 \begin{proof}
     Let $x_1, \ldots, x_n \in \calX$ be a set of points in $\calX$. Define the Voronoi partition by
@@ -43,7 +43,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
     Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \mathrm{dim}(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
 
     \citet{wuExplicitNeuralNetwork2018} explicitly construct a two-layer neural network $\eta:\calX \to \{0, 1\}^{n}$ such that
-    \[\eta(x)_i = 1 \iff x \in V^{(i)}.\]
+    \[{(\eta(x))}_i = 1 \iff x \in V^{(i)}.\]
     The construction contains $n (n - 1)$ neurons in the first layer and $n$ neurons in the second layer, both with the threshold function $\sigma(x) = \bm{1}\sset{x \geq 0}$ as the activation function. Note that sigmoidal activation functions can approximate the step function arbitrarily well. The weights between the first and second layer are sparse. The neural network takes the form,
     \begin{equation*}
         \begin{aligned}
@@ -69,7 +69,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
 \end{remark}
 
 \begin{remark}
-    In the symmetric case, where the relation function $r$ is assumed to be a positive-definite kernel, Mercer's theorem implicitly implies an inner product-like structure in $r$. The above result assumes only the continuity of the relation function $r$ and no further ``inner-product-like'' structure. In some applications, the relation function may have a ``low-rank'' structure such that it is representable by an inner product between low-dimensional feature maps, enabling more favorable bounds on the size of the neural network needed, even in the asymmetric case.
+    In the symmetric case, where the relation function $r$ is assumed to be a positive-definite kernel, Mercer's theorem implies an inner product-like structure in $r$, with a ``rank'' determined by the spectral decay of the kernel. In the asymmetric case, the above result assumes only the continuity of the relation function $r$ and no further ``inner-product-like'' structure. In some applications, the relation function may have a ``low-rank'' structure such that it is representable by an inner product between low-dimensional feature maps, enabling more favorable bounds on the size of the neural network needed, even in the asymmetric case.
 \end{remark}
 
 %% BELOW IS AN OLD VERSION OF THIS SECTION WHERE THE CONSTRUCTION IS BASED ON 
