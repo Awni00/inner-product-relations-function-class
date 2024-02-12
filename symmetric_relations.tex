@@ -144,6 +144,10 @@ The efficiency of neural networks in approximating arbitrary functions has been 
 	This follows by~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\parencite[Theorem 4]{poggioWhyWhenCan2017}. See also~\parencite{bachBreakingCurseDimensionality2016}.
 \end{proof}
 
+\aanote[margin,noinline]{
+	[todo] add another corollary with better dependence in~$\calN_\calF$ via a different $\calF$ and norm, and different universal approx result.
+	}
+
 \begin{remark}
 	In the results above, the number of neurons is bounded by ``$d_r \cdot \calN$''. This is an upper bound assuming each of the $d_r$ kernel eigenfunctions is modeled independently. In practice, the size of the neural network needed would be smaller since the eigenfunctions can be approximated with a single MLP with a $d_r$-dimensional output, allowing for computations to be re-used across several output dimensions.
 \end{remark}
