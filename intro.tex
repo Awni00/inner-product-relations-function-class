@@ -19,8 +19,7 @@ A broad class of recent examples comes from the attention mechanism underlying T
 \end{equation*}
 where $\phi_q, \phi_k$, and $\phi_v$ are learned transformations and $\iprod{\phi_q(x_i)}{\phi_k(x_j)}$ represents a relation between $x_i$ and $x_j$, determining how much $i$ ``should attend to'' $j$. A similar mechanism is at play in earlier neural architectures that implement content-addressable external memory~\parencite{gravesNeuralTuringMachines2014,gravesHybridComputingUsing2016a,pritzelNeuralEpisodicControl2017}, with the read/write operations typically being implemented using an inner product-based similarity computation followed by a softmax normalization. Attention has also been used in other architectures to model relations between different entities~\parencite{velickovicGraphAttentionNetworks2017a,santoroRelationalRecurrentNeural2018,zambaldiDeepReinforcementLearning2018a,locatelloObjectCentricLearningSlot2020b}. For example, \citet{santoroRelationalRecurrentNeural2018} propose a recurrent neural network with a memory module that  employs dot product attention to allow elements of the memory store to interact.
 
-While the Transformer models relations implicitly through its attention mechanism, inner products of features are also central to many explicitly relational neural architectures~\parencite[e.g.,][]{webbEmergentSymbols2021,kergNeuralArchitecture2022,altabaaAbstractorsTransformer2023,altabaaRelationalConvolutionalNetworks2023}. For example, in the model proposed by~\cite{kergNeuralArchitecture2022}, a similarity matrix is computed consisting of symmetric inner products between each pair of objects, $R_{i,\cdot} = \mathrm{Softmax}\pparen{\bra{\iprod{\phi(x_i)}{\phi(x_j)}}_{j\in[n]}}$.~\cite{altabaaAbstractorsTransformer2023} propose a Transformer-based architecture imbued with relational inductive biases by replacing the values $\phi_v(x_i)$ with vector representations which identify objects but are independent of object-level features.~\citet{altabaaRelationalConvolutionalNetworks2023} propose a relational architecture where the central operation is a type of graph-structured convolution operating on a tensor of relations computed via inner products of feature maps.
-
+While the Transformer models relations implicitly through its attention mechanism, inner products of features are also central to many explicitly relational neural architectures~\parencite[e.g.,][]{webbEmergentSymbols2021,kergNeuralArchitecture2022,altabaaRelationalConvolutionalNetworks2023,altabaaAbstractorsRelationalCrossattention2024}. For example, in the model proposed by~\cite{kergNeuralArchitecture2022}, a similarity matrix is computed consisting of symmetric inner products between each pair of objects, $R_{i,\cdot} = \mathrm{Softmax}\pparen{\bra{\iprod{\phi(x_i)}{\phi(x_j)}}_{j\in[n]}}$.~\citet{altabaaAbstractorsRelationalCrossattention2024} propose a Transformer-based architecture imbued with relational inductive biases by replacing the values $\phi_v(x_i)$ with vector representations which identify objects but are independent of object-level features.~\citet{altabaaRelationalConvolutionalNetworks2023} propose a relational architecture where the central operation is a type of graph-structured convolution operating on a tensor of relations computed via inner products of feature maps.
 
 
 In this paper we characterize the function class of inner products of neural networks, showing that inner products of neural networks are universal approximators for relation functions. Our analysis  
@@ -30,27 +29,21 @@ builds on and extends classical universal approximation results for neural netwo
 \noindent{\it\bfseries Symmetric relations.}  If the relation function $r$ defines a symmetric, positive-definite kernel, we show that the relation function can be approximated by inner products of neural networks as 
 $$ \| r(x,y) - \langle \varphi(x), \varphi(y)\rangle \| \leq \varepsilon$$
 where the neural network (MLP) $\varphi$ has $N$ neurons with 
-$$ N \leq d_r(\varepsilon/2) {\cal N}_F\left(\frac{\varepsilon}{4C(r) d_r(\varepsilon/2)}\right)$$
-where $d_r$ is a measure of the spectral decay of the kernel and $C(r)$ is a bound on the eigenfunctions.
-The underlying function space is the reproducing kernel Hilbert space of the kernel.
+$$ N \leq d_r(\varepsilon/2) {\cal N}_\calF\left(\frac{\varepsilon}{4C(r) d_r(\varepsilon/2)}\right)$$
+where $d_r$ is a measure of the spectral decay of the kernel, $C(r)$ is a bound on the eigenfunctions, and $\calN_\calF$ is a measure of the universal approximation properties of a given neural network class.
+The underlying function space can be identified with kernels of reproducing kernel Hilbert spaces.
 
 \noindent{\it\bfseries Asymmetric relations.} This is the setting of many applications of relational 
 learning. In this case, the relation function can be approximated in terms of two different 
 multi-layer perceptrons $\varphi$ and $\psi$, with approximation error 
 $$ \| r(x,y) - \langle \varphi(x), \psi(y)\rangle \| \leq \varepsilon$$
-for any $\varepsilon$. In this case the number of neurons $N$ can be 
-bounded in terms of the size of the neural networks required to approximate 
-indicator functions over rectangles. The underlying function space is associated 
-with a reproducing kernel Banach space.
+achieved by a pair of neural networks with a number of neurons
+$$N = \calO(\delta(\epsilon)^{-2 d}),$$
+where $\delta(\epsilon)$ measures the continuity of $r$ and $d$ is the dimension. The underlying function space can be identified with kernels of reproducing kernel Banach spaces.
 
 \noindent{\it\bfseries Attention mechanisms.} Here we use universal approximation results for inner 
-products of neural networks to show that attention mechanisms, as used in Transformers, can retrieve 
-the most relevant element of a set of values, defined in terms of inner product relations.  More specifically, 
-a query $q$ defines a preorder $\preceq_q$ on the input space ${\cal X}$, and we write 
-$\mathrm{Select}(q, \{x_i\})$ to denote the value $x_{i^*}$ such that 
-$x_{i^*} \preceq_q x_j$ for all $j$.  We show that there exist MLPs that define an
-attention mechanism satisfying 
-$$\|\mathrm{Select}(q, \{x_i\}) - \mathrm{Attention}(q, \{x_i\})\| \leq \varepsilon$$
+products of neural networks to show that attention mechanisms, as used in Transformers, can always retrieve the ``most relevant'' element of a set of values.  More specifically, let any query $q$ defines a preorder $\preceq_q$ on the input space $\calX$ such that $x \succeq_q y$ when $x$ is more relevant to $q$ than $y$. We write $\mathrm{Select}(q, \{x_i\})$ to denote the value $x_{i^*}$ such that $x_{i^*} \succ_q x_j$ for all $j \neq i^*$. That is, the function which selects the ``maximally relevant'' element in the context. We show that there exist MLPs that define an attention mechanism satisfying 
+$$\|\mathrm{Select}(q, \{x_i\}_{i \in [n]}) - \mathrm{Attention}(q, \{x_i\}_{i \in [n]})\| \leq \varepsilon$$
 for any $\varepsilon$. Our formulation of this result uses the Debreu representation 
 theorem in economics to represent preference relations in terms of utility functions.
 
