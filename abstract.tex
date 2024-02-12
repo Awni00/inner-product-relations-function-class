@@ -1,11 +1,8 @@
 \begin{abstract}
-    Inner products of neural networks are studied as universal approximators for relation functions, 
-    which arise in a wide variety of machine learning frameworks. 
-    If the relation function defines a symmetric, positive-definite kernel, it is shown that the relation can be approximated by inner products of multi-layer perceptrons,
-    and a bound is obtained on the number of neurons required to achieve a given accuracy of approximation.
-    In case the relation function is asymmetric, it 
-    can be approximated in terms of two different multi-layer perceptrons, and a bound 
-    on the number of neurons in each network is expressed in terms of the size 
-    of neural networks required to approximate indicator functions over rectangles in the input space. In this case, the underlying function space is associated with a reproducing kernel Banach space. Finally, universal approximation results for inner products of neural networks are used to show that attention mechanisms can retrieve the most relevant element of a set of values to a given query, in the terminology of Transformers.
+    Inner products of neural network feature maps arises in a wide variety of machine learning frameworks as a method of modeling relations between inputs.
+    This work studies the approximation properties of inner products of neural networks.
+    It is shown that the inner product of a multi-layer perceptron with itself is a universal approximator for symmetric positive-definite relation functions. In the case of asymmetric relation functions, it is shown that the inner product of two different multi-layer perceptrons is a universal approximator.
+    In both cases, a bound is obtained on the number of neurons required to achieve a given accuracy of approximation. In the symmetric case, the function class can be identified with kernels of reproducing kernel Hilbert spaces, whereas in the asymmetric case the function class can be identified with kernels of reproducing kernel Banach spaces.
+    Finally, these approximation results are applied to analyzing the attention mechanism underlying Transformers, showing that any retrieval mechanism defined by an abstract preorder can be approximated by attention through its inner product relations.
     This result uses the Debreu representation theorem in economics to represent preference relations in terms of utility functions.
 \end{abstract}
