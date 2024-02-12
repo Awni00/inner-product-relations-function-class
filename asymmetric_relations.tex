@@ -61,7 +61,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
         \abs{r(x, y) - \iprod{\phi(x)}{\psi(y)}} &\leq \abs{r(x, y) - r(q(x), q(y))} + \abs{r(q(x), q(y)) - \iprod{\phi(x)}{\phi(y)}}\\
         &\leq \epsilon + \abs{r(q(x), q(y)) - \eta(x)^\top R\, \eta(y)},
     \end{align*}
-    where the second inequality follows by the assumption of continuity on the relation function $r$ and the choice of the quantization diameter $\delta$. Now, note that whenever $x \in \mathrm{int}(V^{(i)})$, we have $\eta(x) = e_i$. Hence $r(q(x), q(y)) = \eta(x)^\top R \eta(y)$ Lebesgue-almost everywhere. This completes the proof.
+    where the second inequality follows by the assumption of continuity on the relation function $r$ and the choice of the quantization diameter $\delta$. Now, note that whenever $x \in \mathrm{int}(V^{(i)})$, we have $\eta(x) = e_i$, where $e_i$ is the canonical basis vector. Hence $r(q(x), q(y)) = \eta(x)^\top R\, \eta(y)$ Lebesgue-almost everywhere. This completes the proof.
 \end{proof}
 
 \begin{remark}
