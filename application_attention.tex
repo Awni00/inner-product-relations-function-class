@@ -27,7 +27,7 @@ For a given query $q$, the preordered space $(\calX, \preceq_q)$ defines the mos
 \begin{equation}\label{eq:def_select}
     \mathrm{Select}(q, (x_1, \ldots, x_n)) = \max\paren{\paren{x_1, \ldots, x_n}, \mathtt{key}=\preceq_q}.
 \end{equation}
-That is, $\mathrm{Select}(q, (x_1, \ldots, x_n))$ is the function which returns the most relevant element with respect to $q$. Formally, it returns $x_i$ when $x_i \prec_q x_j, \, \forall j \neq i$ (and may return an arbitrary element if no unique maximal element exists in the context).
+That is, $\mathrm{Select}(q, (x_1, \ldots, x_n))$ is the function which returns the most relevant element with respect to $q$. Formally, it returns $x_i$ when $x_i \succ_q x_j, \, \forall j \neq i$ (and may return an arbitrary element if no unique maximal element exists in the context).
 
 We impose some natural regularity assumptions on the family of relevance preorders $\sset{\preceq_q}_{q \in \calX}$.
 \begin{assumption}[Key-continuity]\label{ass:key_cts}
