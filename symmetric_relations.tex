@@ -96,7 +96,7 @@ We are now ready to formally state our main result.
 	The first term is bounded by $\frac{\epsilon}{2}$ by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded by noting the for any $x, y \in \calX$
 	\begin{equation*}
 		\begin{split}
-			&\abs{\sum_{i=1}^{d}\lambda_i \psi_i(x) \psi_i(y) - \sum_{i=1}^{d}\phi_i(x) \phi_i(y)}_{\calF^{\otimes 2}}  \\
+			&\abs{\sum_{i=1}^{d}\lambda_i \psi_i(x) \psi_i(y) - \sum_{i=1}^{d}\phi_i(x) \phi_i(y)} \\
 			&\leq \sum_{i=1}^{d}{ \abs{ \lambda_i \psi_i(x) \psi_i(y) - \phi_i(x) \phi_i(y)}} \\
 			&\leq \sum_{i=1}^{d}{\paren{
 				\abs{\sqrt{\lambda_i} \psi_i(y)} \abs{\sqrt{\lambda_i} \psi_i(y) - \phi_i(y)}
@@ -120,7 +120,7 @@ We are now ready to formally state our main result.
 
 	Then, by~\eqref{eq:proof_approx_bound}, we have that
 	\begin{equation*}
-			\bignorm{r(x,y) - \iprod{\phi_\theta(x)}{\phi_\theta(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon.
+			\bignorm{r(x,y) - \iprod{\phi(x)}{\phi(y)}}_{\calF^{\otimes 2}} \leq \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon.
 	\end{equation*}
 
 	Hence, the relation function $r$ is approximated with respect to $\nnorm{\cdot}_{\calF^{\otimes}}$ by an inner product of neural networks with number of neurons at most 
