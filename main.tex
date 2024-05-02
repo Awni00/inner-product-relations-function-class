@@ -2,10 +2,11 @@
 
 \RequirePackage[OT1]{fontenc}
 \usepackage{mymathstyle}
+\usepackage{papercommands}
 
 % region set up fixme and in-text annotations
 \usepackage{pdfcomment}
-\usepackage[inline, nomargin, mode=multiuser, author=]{fixme}
+\usepackage[draft, inline, nomargin, mode=multiuser, author=]{fixme}
 \usepackage[us]{datetime}
 \fxloadlayouts{pdfcnote}
 \fxuseenvlayout{colorsig} % plain, signature, color, colorsig
@@ -14,7 +15,6 @@
 \FXRegisterAuthor{jl}{anjl}{JL}
 \fxusetheme{colorsig}
 \fxsetface{margin}{\scriptsize}
-
 % endregion
 
 % region hyperref and link color options
@@ -77,21 +77,6 @@
 \setlength\bibitemsep{7pt}
 \renewbibmacro{in:}{}
 
-\def\given{\,|\,}
-\def\P{\mathbb{P}}
-\def\E{\mathbb{E}}
-\def\reals{\mathbb{R}}
-\let\what\widehat
-\let\hat\widehat
-\let\tilde\widetilde
-\let\phi\varphi
-\let\epsilon\varepsilon
-\let\preceq\preccurlyeq
-
-\renewcommand{\argmin}{\mathop{\rm argmin}}
-\newcommand{\ess}{\mathop{\rm ess}}
-\renewcommand{\argmax}{\mathop{\rm argmax}}
-
 \parskip12pt
 \parindent0pt 
 
@@ -126,6 +111,8 @@
 \input{reproducing_kernels_connection.tex}
 
 \input{application_attention.tex}
+
+\input{transformer_ngram_lm_icl.tex}
 
 \input{discussion}
 
