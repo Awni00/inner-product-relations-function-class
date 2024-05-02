@@ -35,12 +35,12 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
     \begin{equation*}
         \abs{r(x,y) - \iprod{\phi(x)}{\psi(y)}} \leq \epsilon, \quad \text{Lebesgue-almost everywhere.}
     \end{equation*}
-    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \eta$, $\psi = L_\psi \circ \eta$ where $\eta$ is a shared 2-layer MLP with $N = \calO(\delta^{- 2 \,\mathrm{dim}(\calX)})$ neurons and $L_\phi, L_\psi$ are linear projections onto $n$-dimensional space, with $n = \calO(\delta^{- \mathrm{dim}(\calX)})$ and $\delta = \delta(\epsilon)$.
+    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \eta$, $\psi = L_\psi \circ \eta$ where $\eta$ is a shared 2-layer MLP with $N = \calO(\delta^{- 2 \,\dim(\calX)})$ neurons and $L_\phi, L_\psi$ are linear projections onto $n$-dimensional space, with $n = \calO(\delta^{- \dim(\calX)})$ and $\delta = \delta(\epsilon)$.
 \end{theorem}
 \begin{proof}
     Let $x_1, \ldots, x_n \in \calX$ be a set of points in $\calX$. Define the Voronoi partition by
     \[V^{(i)} = \sset{x \in \calX \,|\, \norm{x - x_i} \leq \norm{x - x_j} \ \forall j \neq i}.\]
-    Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \mathrm{dim}(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
+    Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \dim(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
 
     \citet{wuExplicitNeuralNetwork2018} explicitly construct a two-layer neural network $\eta:\calX \to \{0, 1\}^{n}$ such that
     \[{(\eta(x))}_i = 1 \iff x \in V^{(i)}.\]
@@ -102,7 +102,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
 
 % Note that if each $x \in \calX$ is a one-hot vector in $\reals^{\abs{\calX}}$, then the result above holds with linear maps $\phi, \psi$. Although very simple, this result has direct implications to domains such as language modeling where $\calX$ is a discrete set of tokens, and hence finite. In such cases,~\Cref{lemma:finite_space_rel} tells us that any relation function can be approximated by inner products of feature maps (i.e., of the form present in the attention mechanisms of Transformers). Moreover, in the case of language, there may be a low-rank structure (e.g., depending on syntax, semantics, etc.) enabling a more modest dimension of the feature maps, $d \ll \abs{\calX}$.
 
-% Next, we proceed to show that arbitrary continuous relation functions can be approximated by inner products of two different neural networks. For simplicity, we assume $\calX = [0, 1]^{d}$, where $d = \mathrm{dim}(\calX)$.
+% Next, we proceed to show that arbitrary continuous relation functions can be approximated by inner products of two different neural networks. For simplicity, we assume $\calX = [0, 1]^{d}$, where $d = \dim(\calX)$.
 
 % \textbf{Preliminaries.} Let $\calR(\delta) = \sset{R_1, \ldots, R_{\aabs{\calR}}}$ be a partition of $\calX$ into rectangles $R_i = \times_{j=1}^{d} [a_j^i, b_j^i)$ such that $\mathrm{length}(R_i) \leq \delta$ for all $i$. Note that such partition exists with $\delta^{-d}$ rectangles. Let $\norm{\cdot}_\calF$ be a norm on the space of functions from $\calX$ to $\reals$. In particular, we consider the sup-norm $\nnorm{f(\cdot)}_\calF = \sup_{x \in \calX} \abs{f(x)}$ or $L^p$-norms $\nnorm{f(\cdot)}_\calF = \pparen{\int_\calX \abs{f(x)}^p d\mu(x)}^{1/p}$ for some probability measure $\mu$. We denote the corresponding norm on functions from $\calX \times \calX$ to $\reals$ as $\nnorm{f(\cdot)}_{\calF^\otimes 2}$.%, defined as in~\Cref{sec:symmetric_relations}.
 
@@ -180,3 +180,10 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
 % where the first inequality is since $\tilde{\epsilon} \leq 1$ and the second is because $\delta \leq 1$. Hence, the expression is less than $\epsilon$ when $\tilde{\epsilon} = \min((6 R_{\max})^{-1} \delta^d \epsilon, 1)$.
 
 % }
+\aanote{[todo]: add discussion/section on the scale of NNs needed to approximate a particular relation function.}
+
+\aanote{can we show that $\delta^{-\dim(\calX)}$ is necessary in the worst case? can make use of lower bounds from standard MLPs.}
+
+\aanote{
+    this universal approximation is based on arbitrary continuous functions on the $d$-dimensional space. but, in practice, we may be interested in relations with ``low-rank structure'' (i.e., relations in low-dimensional spaces). e.g., $\calX$ may be a space of images (e.g., $d =  l \times w \times 3$), but we may be only interested in computing relations between an attribute like color, texture, or shape of a particular object in the image, which  would be representable in a much lower-dimensional space (e.g., $d = 3$). Moreover, `projections' onto the low-dimensional space on which to compute relations may be very smooth or even linear. e.g., $r(x, y) = \bar{r}(\phi(x), \psi(y))$ where $\phi, \psi$ are smooth and low-dimensional. then, we can get something like $\delta^{-k}$ to approximate $\bar{r}$ and $k \cdot \calN_\calF(\epsilon)$ to approximate $\phi, \psi$ which we can assume are smooth. can we formalize this and develop a theory. i.e., formalize an assumption on the relation function as a composition of a smooth projection into a lower dimensional space followed by a continuous bivariate function. can note relation to how `relations' are computed in Transformers/Abstractors/RelConvNet, etc. first a FeedForward net, then low-dimensional projections.
+    }
