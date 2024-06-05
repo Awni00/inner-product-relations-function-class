@@ -9,10 +9,10 @@ where $\phi$ is a neural network. Symmetric relation functions modeled in this w
     \twonorm{\phi(x) - \phi(y)}^2 = 2 - 2 r(x, y).
 \end{equation}
 
-The Cauchy-Schwartz inequality states that
-\begin{equation}
-    r(x, y)^2 \leq r(x, x) r(y, y) = 1, \ \forall x, y \in \calX.
-\end{equation}
+% The Cauchy-Schwartz inequality states that
+% \begin{equation}
+%     r(x, y)^2 \leq r(x, x) r(y, y) = 1, \ \forall x, y \in \calX.
+% \end{equation}
 
 Thus, $r(x,y)$ is large and close to $1$ when $x$ and $y$ are similar (with respect to $\phi$), and close to $0$ when $x, y$ are dissimilar. Moreover, $r: \calX \times \calX \to \reals$ induces a geometry on $\calX$ via the pseudometric $d(x,y) = \sqrt{2 - 2 r(x,y)}$. The triangle inequality of the pseudometric corresponds to a notion of transitivity---if $x$ is related to $y$ and $y$ is related to $z$, then $x$ must be related to $z$.
 
@@ -48,7 +48,7 @@ Universal approximation results make theoretical guarantees about how well a cla
 Alternatively, this can be stated as follows: for a desired approximation error $\epsilon$, how large does $N$ need to be so that there exists $g \in \calV_N$ such that $\norm{f - g}_{\calF} \leq \epsilon$? We state this below as an assumption on the network class $\calV$.
 
 \begin{assumption}[Efficiency of function approximator]\label{ass:univ_approx_efficiency}
-	Consider a class of neural networks $\calV = \cup_N \calV_N$ on a space $\calX$ where $N$ is a scalable complexity. Let $\calF$ be a class of functions on $\calX$. For $\epsilon > 0$, denote by $\calN_\calF(\epsilon) \in \naturals$ the minimum integer such that for any function $f \in \calF$, there exists a neural network $g \in \calV_N, \, N = \calN_\calF(\epsilon)$ that approximates $f$ with respect to $\norm{\cdot}_\calF$ with error bounded by $\epsilon$. That is,
+	Consider a class of neural networks $\calV = \cup_N \calV_N$ on a space $\calX$ where $N$ is a scalable complexity. Let $\calF$ be a class of functions on $\calX$. For $\epsilon > 0$, denote by $\calN_\calF(\epsilon) \in \naturals$ the minimum integer such that for any function $f \in \calF$, there exists a neural network $g \in \calV_N$ with $N = \calN_\calF(\epsilon)$ that approximates $f$ with respect to $\norm{\cdot}_\calF$ with error bounded by $\epsilon$. That is,
 	\begin{equation*}
 		\sup_{f \in \calF} \, \inf_{g \in \calV_N} \norm{f - g}_{\calF} \leq \epsilon.
 	\end{equation*}
@@ -166,3 +166,5 @@ where $\hat{f}$ denote the Fourier transform. The advantage of this measure of s
 \begin{proof}
 	This follows by~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{barronUniversalApproximation1993}.
 \end{proof}
+
+This result shows that the size of the neural network needed to approximate $r$ scales with its spectrum decay $d_r(\cdot)$, which can be interpreted as a measure of the dimensionality or ``rank'' of the relation, and the smoothness of its eigenfunctions $B(r)$.

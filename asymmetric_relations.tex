@@ -1,14 +1,14 @@
 \section{Function class of asymmetric inner product relations}\label{sec:asymmetric_relations}
 
-In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. For example, order relations are asymmetric (in fact, anti-symmetric). Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general (asymmetric) relation $r: \calX \times \calX$ as the inner product of two different neural network encodings of a pair of objects,
+In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. One example of an asymmetric relation is \textit{order} (in fact, anti-symmetric). Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general (asymmetric) relation $r: \calX \times \calX \to \reals$ as the inner product of two different neural network encodings of a pair of objects,
 \begin{equation}\label{eq:asymmetric_iprod_relation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)},
 \end{equation}
 where $\phi, \psi: \calX \to \reals^d$ are two neural networks.
 
-In this section, we show that inner products of universal approximators (e.g., when $\phi, \psi$ are multi-layer perceptrons) can approximate any continuous function on $\calX \times \calX$.
+In this section, we show that inner products of multi-layer perceptrons can approximate any continuous function on $\calX \times \calX$.
 
-We begin with the following simple lemma which states when the object space $\calX$ is finite, any relation function can be represented as the inner product between two encodings.
+We begin with the following very simple lemma which states when the object space $\calX$ is finite, any relation function can be represented as the inner product between two encodings.
 
 \aanote{perhaps this should not be stated as a lemma. or simply removed?}
 \begin{lemma}\label{lemma:finite_space_rel}
@@ -74,16 +74,16 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
 \end{remark}
 
 \aanote[margin, noinline]{this discussion is new.}
-Here, again, we observe the ``curse of dimensionality'' in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, where the number of neurons needed to obtain a good approximation scales exponentially with the dimension of the underlying function. We note that~\Cref{theorem:asymemtric_inner_prod_rel_func_class} makes very mild regularity conditions on the relation function to be approximated---it only needs to be continuous as a function from $\calX \times \calX$ to $\reals$. In general, an exponential dependence on $2\, \dim(\calX)$ is necessary for any method of approximation~\citep{pinkus1999approximation,devore1998nonlinear,maiorov1999lower,maiorov2000near,poggioWhyWhenCan2017}.
+Here, again, we observe the ``curse of dimensionality'' in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, where the number of neurons needed to obtain a good approximation scales exponentially with the dimension of the underlying space $\calX$. We note that~\Cref{theorem:asymemtric_inner_prod_rel_func_class} makes very mild regularity conditions on the relation function to be approximated---it only needs to be continuous as a function from $\calX \times \calX$ to $\reals$. In general, an exponential dependence on $2\,\cdot\, \dim(\calX)$ is necessary for any method of approximation~\citep{pinkus1999approximation,devore1998nonlinear,maiorov1999lower,maiorov2000near,poggioWhyWhenCan2017}.
 
 This exponential dependence on dimension can be avoided with additional structure on the relation function. Here, we consider a compositional structure where the relation depends on the object vectors only through a smooth low-dimensional feature filter. That is, the target relation function $r: \calX \times \calX \to \reals$ takes the form,
 \begin{equation*}
     r(x, y) = \bar{r}(\xi(x), \xi(y)),
 \end{equation*}
-where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and $\bar{r}$ is a continuous relation on the feature $\xi$. For example, $\calX$ may be a high-dimensional image space, while $\xi$ is a low-dimensional filter representing a particular visual attribute such as color or texture in some patch of the image. We will consider smoothness as measured by the Barron norm, $\nnorm{f}_{\calB} \coloneq \int_{\reals^d} \nnorm{\hat{\nabla f}(\omega)} d\omega$.
+where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and $\bar{r}$ is a continuous relation on the feature $\xi$. For example, $\calX$ may be a high-dimensional image space, while $\xi$ is a low-dimensional filter representing a particular visual attribute such as color or texture in some patch of the image. We will consider smoothness of $\xi$ as measured by the Barron norm, $\nnorm{f}_{\calB} \coloneq \int_{\reals^d} \nnorm{\hat{\nabla f}(\omega)} d\omega$. We write $\nnorm{\xi}_{\calB}$ to mean $\max_{i \in [k]} \nnorm{\xi_i}_{\calB}$.
 
 \begin{corollary}
-    Consider the setting of~\Cref{theorem:asymemtric_inner_prod_rel_func_class}. Suppose the relation function $r: \calX \times \calX \to \reals$ has the form $r(x, y) = \bar{r}(\xi(x), \xi(y))$ where $\xi: \calX \to \reals^k$ has Barron norm $\nnorm{\xi}_\calB$ and $\bar{r}: \reals^k \times \reals^k \to \reals$ is $L$-Lipschitz in the sense that $\aabs{\bar{r}(x, y) - \bar{r}(x', y')} \leq L (\max(\nnorm{x - x'}_\infty, \nnorm{y - y'}_\infty)), \, \forall x,x',y,y' \in \xi(\calX)$. Then, for any $\epsilon > 0$, there exists $\hat{\xi}, \phi = L_\phi \circ \eta, \psi = L_\psi \circ \eta$, such that
+    Consider the setting of~\Cref{theorem:asymemtric_inner_prod_rel_func_class}. Suppose the relation function $r: \calX \times \calX \to \reals$ has the form $r(x, y) = \bar{r}(\xi(x), \xi(y))$ where $\xi: \calX \to \reals^k$ has Barron norm $\nnorm{\xi}_\calB$ and $\bar{r}: \reals^k \times \reals^k \to \reals$ is $L$-Lipschitz in the sense that $\aabs{\bar{r}(x, y) - \bar{r}(x', y')} \leq L \cdot (\max(\nnorm{x - x'}_\infty, \nnorm{y - y'}_\infty)), \, \forall x,x',y,y' \in \xi(\calX)$. Then, for any $\epsilon > 0$, there exists $\hat{\xi}, \phi = L_\phi \circ \eta, \psi = L_\psi \circ \eta$, such that
     \[\norm{r(x, y) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \leq \epsilon\]
     where $\hat{\xi}$ is a shallow 1-hidden layer neural network with $\calO(k \cdot \frac{\nnorm{\xi}_{\calB}^2}{\epsilon^2})$ hidden neurons and $k$ output neurons, $\eta$ is a 2-layer neural network with $\calO((\frac{L}{\epsilon})^{2 k})$ neurons, and $L_\phi, L_\psi$ are linear projections onto $\calO((\frac{L}{\epsilon})^{k})$-dimensional space.
 \end{corollary}
@@ -94,15 +94,7 @@ where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and 
         &\leq \norm{\bar{r}(\xi(x), \xi(y)) - \bar{r}(\hat{\xi}(x), \hat{\xi}(y))}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \\
         &\leq \norm{L \paren{\infnorm{\xi(x) - \hat{\xi}(x)} + \infnorm{\xi(y) - \hat{\xi}(y)}}}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2}
     \end{align*}
-    The second term can be approximated uniformly (not just in $L^2$) by the MLPs $\phi, \psi$ constructed in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}. The first term can be controlled by constructing $\hat{\xi}$ to approximate $\xi$ in the $L^2$ norm according to~\textcite{barronUniversalApproximation1993}'s construction.
+    The first term can be controlled by constructing $\hat{\xi}$ to approximate $\xi$ in the $L^2$ norm according to~\textcite{barronUniversalApproximation1993}'s construction. The number of neurons needed depends on the smoothness of the function $\xi$. The second term can be approximated uniformly (not just in $L^2$) by constructing MLPs $\phi, \psi$ according to~\Cref{theorem:asymemtric_inner_prod_rel_func_class} to approximate $\bar{r}$. Here, the complexity of the neural network class needed depends on $k$ rather than $d$.
 \end{proof}
 
 This result shows that if the underlying relation function possesses a compositional structure depending on a low-dimensional smooth feature map, then it can be efficiently approximated by inner products of neural networks. In particular, the number of neurons needed scales with the dimensionality $k$ of the feature filter $\xi$ and the smoothness of $\xi$, as measured by the Barron norm.
-
-% \aanote{[todo]: add discussion/section on the scale of NNs needed to approximate a particular relation function.}
-
-% \aanote{can we show that $\delta^{-\dim(\calX)}$ is necessary in the worst case? can make use of lower bounds from standard MLPs.}
-
-% \aanote{
-    % this universal approximation is based on arbitrary continuous functions on the $d$-dimensional space. but, in practice, we may be interested in relations with ``low-rank structure'' (i.e., relations in low-dimensional spaces). e.g., $\calX$ may be a space of images (e.g., $d =  l \times w \times 3$), but we may be only interested in computing relations between an attribute like color, texture, or shape of a particular object in the image, which  would be representable in a much lower-dimensional space (e.g., $d = 3$). Moreover, `projections' onto the low-dimensional space on which to compute relations may be very smooth or even linear. e.g., $r(x, y) = \bar{r}(\phi(x), \psi(y))$ where $\phi, \psi$ are smooth and low-dimensional. then, we can get something like $\delta^{-k}$ to approximate $\bar{r}$ and $k \cdot \calN_\calF(\epsilon)$ to approximate $\phi, \psi$ which we can assume are smooth. can we formalize this and develop a theory. i.e., formalize an assumption on the relation function as a composition of a smooth projection into a lower dimensional space followed by a continuous bivariate function. can note relation to how `relations' are computed in Transformers/Abstractors/RelConvNet, etc. first a FeedForward net, then low-dimensional projections.
-    % }
