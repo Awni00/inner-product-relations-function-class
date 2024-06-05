@@ -1,6 +1,6 @@
 \section{Function class of asymmetric inner product relations}\label{sec:asymmetric_relations}
 
-In the previous section we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. For example, order relations are asymmetric (in fact, anti-symmetric). Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general (asymmetric) relation $r: \calX \times \calX$ as the inner product of two different neural network encodings of a pair of objects,
+In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. For example, order relations are asymmetric (in fact, anti-symmetric). Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general (asymmetric) relation $r: \calX \times \calX$ as the inner product of two different neural network encodings of a pair of objects,
 \begin{equation}\label{eq:asymmetric_iprod_relation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)},
 \end{equation}
@@ -10,6 +10,7 @@ In this section, we show that inner products of universal approximators (e.g., w
 
 We begin with the following simple lemma which states when the object space $\calX$ is finite, any relation function can be represented as the inner product between two encodings.
 
+\aanote{perhaps this should not be stated as a lemma. or simply removed?}
 \begin{lemma}\label{lemma:finite_space_rel}
     Suppose $\calX$ is a finite space. Let $r: \calX \times \calX \to \reals$ be any relation function. Then, there exists $d \leq \abs{\calX}$ and $\phi, \psi: \calX \to \reals^{d}$ such that,
     \begin{equation*}
@@ -26,12 +27,12 @@ We begin with the following simple lemma which states when the object space $\ca
     Then, $r(x, y) = \iprod{\phi(x)}{\psi(y)}$ for all $x, y \in \calX$.
 \end{proof}
 
-Note that if each $x \in \calX$ is a one-hot vector in $\reals^{\abs{\calX}}$, then the result above holds with linear maps $\phi, \psi$. Although very simple, this result has direct implications to domains such as language modeling where $\calX$ is a discrete set of tokens, and hence finite. In such cases,~\Cref{lemma:finite_space_rel} tells us that any relation function can be approximated by inner products of feature maps (i.e., of the form present in the attention mechanisms of Transformers). Moreover, in the case of language, there may be a low-rank structure (e.g., depending on syntax, semantics, etc.) enabling a more modest dimension of the feature maps, $d \ll \abs{\calX}$.
+Note that if each $x \in \calX$ is a one-hot vector in $\reals^{\abs{\calX}}$, then the result above holds with linear maps $\phi, \psi$. Although very simple, this result has direct implications for domains such as language modeling where $\calX$ is a discrete set of tokens, and hence finite. In such cases,~\Cref{lemma:finite_space_rel} tells us that any relation function can be approximated by inner products of feature maps (i.e., of the form present in the attention mechanisms of Transformers). Moreover, in the case of language, there may be a low-rank structure (e.g., depending on syntax, semantics, etc.) enabling a more modest dimension of the feature maps, $d \ll \abs{\calX}$.
 
 Next, we proceed to show that arbitrary continuous relation functions can be approximated by inner products of two different neural networks. Our strategy will be to first quantize the space $\calX$ then apply the construction above for the finite case.
 
 \begin{theorem}\label{theorem:asymemtric_inner_prod_rel_func_class}
-    Suppose the relation function $r: \calX \times \calX \to \reals$ is continuous. In particular, for any $\epsilon > 0$, there exists $\delta(\epsilon) > 0$ such that for any $x, y, \tilde{x}, \tilde{y}$ satisfying $\norm{x - \tilde{x}} \leq \delta$, $\norm{y - \tilde{y}} \leq \delta$, we have $\abs{r(x, y) - r(\tilde{x}, \tilde{y})} \leq \epsilon$. Then, for any approximation error $\epsilon > 0$ there exists multi-layer perceptrons $\phi, \psi$ such that
+    Suppose the relation function $r: \calX \times \calX \to \reals$ is continuous. In particular, for any $\epsilon > 0$, there exists $\delta(\epsilon) > 0$ such that for any $x, y, x', y'$ satisfying $\norm{x - x'} \leq \delta$, $\norm{y - y'} \leq \delta$, we have $\abs{r(x, y) - r(x', y')} \leq \epsilon$. Then, for any approximation error $\epsilon > 0$ there exists multi-layer perceptrons $\phi, \psi$ such that
     \begin{equation*}
         \abs{r(x,y) - \iprod{\phi(x)}{\psi(y)}} \leq \epsilon, \quad \text{Lebesgue-almost everywhere.}
     \end{equation*}
@@ -72,7 +73,7 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
     In the symmetric case, where the relation function $r$ is assumed to be a positive-definite kernel, Mercer's theorem implies an inner product-like structure in $r$, with a ``rank'' determined by the spectral decay of the kernel. In the asymmetric case, the above result assumes only the continuity of the relation function $r$ and no further ``inner-product-like'' structure. In some applications, the relation function may have a ``low-rank'' structure such that it is representable by an inner product between low-dimensional feature maps, enabling more favorable bounds on the size of the neural network needed, even in the asymmetric case.
 \end{remark}
 
-\aanote{this discussion is new.}
+\aanote[margin, noinline]{this discussion is new.}
 Here, again, we observe the ``curse of dimensionality'' in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, where the number of neurons needed to obtain a good approximation scales exponentially with the dimension of the underlying function. We note that~\Cref{theorem:asymemtric_inner_prod_rel_func_class} makes very mild regularity conditions on the relation function to be approximated---it only needs to be continuous as a function from $\calX \times \calX$ to $\reals$. In general, an exponential dependence on $2\, \dim(\calX)$ is necessary for any method of approximation~\citep{pinkus1999approximation,devore1998nonlinear,maiorov1999lower,maiorov2000near,poggioWhyWhenCan2017}.
 
 This exponential dependence on dimension can be avoided with additional structure on the relation function. Here, we consider a compositional structure where the relation depends on the object vectors only through a smooth low-dimensional feature filter. That is, the target relation function $r: \calX \times \calX \to \reals$ takes the form,
@@ -96,7 +97,7 @@ where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and 
     The second term can be approximated uniformly (not just in $L^2$) by the MLPs $\phi, \psi$ constructed in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}. The first term can be controlled by constructing $\hat{\xi}$ to approximate $\xi$ in the $L^2$ norm according to~\textcite{barronUniversalApproximation1993}'s construction.
 \end{proof}
 
-This result shows that if the underlying relation function posses a compositional structure depending on a low-dimensional smooth feature map, then it can be efficiently approximated by inner products of neural networks. In particular, the number of neurons needed scales with the dimensionality $k$ of the feature filter $\xi$ and the smoothness of $\xi$, as measured by the Barron norm.
+This result shows that if the underlying relation function possesses a compositional structure depending on a low-dimensional smooth feature map, then it can be efficiently approximated by inner products of neural networks. In particular, the number of neurons needed scales with the dimensionality $k$ of the feature filter $\xi$ and the smoothness of $\xi$, as measured by the Barron norm.
 
 % \aanote{[todo]: add discussion/section on the scale of NNs needed to approximate a particular relation function.}
 
