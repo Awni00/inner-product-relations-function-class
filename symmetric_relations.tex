@@ -154,24 +154,15 @@ We observe a curse of dimensionality in this approximation result, where the num
 where $\hat{f}$ denotes the Fourier transform. The advantage of this measure of smoothness is that, for some interesting classes of functions, it scales sub-exponentially with the dimension. In the following corollary, we show that a more favorable dependence on the dimension can be obtained if the eigenfunctions of the relation are smooth in the sense of the Barron norm.
 
 \begin{corollary}\label{cor:sym_iprod_kernel_barron_neuron_bound}
-<<<<<<< HEAD
-	Consider the setting of~\Cref{theorem:symmetric_inner_prod_rels_func_class}. Suppose that $\calX$ has radius $\mathrm{radius}(\calX)$, so that $\nnorm{x} \leq \mathrm{radius}(\calX),\, \forall x \in \calX$. Assume that $\nnorm{\sqrt{\lambda_i} \psi_i} \leq B(r)$ for $i \in [d_r(\epsilon/2)]$. Consider $\calV$ to be the class of shallow neural networks with sigmoid activations with $\phi \in \calV$ given by
-=======
 	Consider the setting of~\Cref{theorem:symmetric_inner_prod_rels_func_class}. Suppose that $\calX$ has radius $\mathrm{radius}(\calX)$ (i.e., $\nnorm{x} \leq \mathrm{radius}(\calX),\, \forall x \in \calX$). Assume that $\nnorm{\sqrt{\lambda_i} \psi_i}_{\calB} \leq B(r)$ for $i \in [d_r(\epsilon/2)]$. Consider $\calV$ to be the class of shallow neural networks with sigmoid activations with $\phi \in \calV$ given by
->>>>>>> 8e1150cfcda463a73599492974134e1c2fd29c9b
 	\begin{equation*}
 		\phi(x) = \sum_{k=1}^{N} a_k \sigma(\iprod{w_k}{x} + b_k),
 	\end{equation*}
 	where $a_k, b_k \in \reals$, $w_k \in \reals^{d}$ are the parameters, and $N$ is the number of neurons. Then, for any $\epsilon > 0$, there exists $\phi \in \calV_N$ achieving $\nnorm{r(x,y) - \iprod{\phi(x)}{\phi(y)}}_{L^2} < \epsilon$ with a number of neurons $N$ of the order
 	\[\calO\paren{d_r(\epsilon / 2)^3 \cdot \frac{\paren{C(r) \cdot \mathrm{radius}(\calX)\, \cdot B(r)}^2}{\epsilon^2}}.\]
 \end{corollary}
-<<<<<<< HEAD
-The proof of this statement follows from~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{barronUniversalApproximation1993}.
-
-=======
 \begin{proof}
 	This follows by~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{barronUniversalApproximation1993}.
 \end{proof}
 
 This result shows that the size of the neural network needed to approximate $r$ scales with its spectrum decay $d_r(\cdot)$, which can be interpreted as a measure of the dimensionality or ``rank'' of the relation, and the smoothness of its eigenfunctions $B(r)$.
->>>>>>> 8e1150cfcda463a73599492974134e1c2fd29c9b
