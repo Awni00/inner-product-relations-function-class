@@ -1,6 +1,6 @@
 \section{Function class of asymmetric inner product relations}\label{sec:asymmetric_relations}
 
-In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. One example of an asymmetric relation is \textit{order} (in fact, anti-symmetric). Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general (asymmetric) relation $r: \calX \times \calX \to \reals$ as the inner product of two different neural network encodings of a pair of objects,
+In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. One example of an asymmetric (in fact, anti-symmetric) relation is \textit{order}. Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general asymmetric relation $r: \calX \times \calX \to \reals$ as the inner product of two different neural network encodings of a pair of objects,
 \begin{equation}\label{eq:asymmetric_iprod_relation}
     r(x, y) = \iprod{\phi(x)}{\psi(y)},
 \end{equation}
