@@ -161,8 +161,5 @@ where $\hat{f}$ denotes the Fourier transform. The advantage of this measure of 
 	where $a_k, b_k \in \reals$, $w_k \in \reals^{d}$ are the parameters, and $N$ is the number of neurons. Then, for any $\epsilon > 0$, there exists $\phi \in \calV_N$ achieving $\nnorm{r(x,y) - \iprod{\phi(x)}{\phi(y)}}_{L^2} < \epsilon$ with a number of neurons $N$ of the order
 	\[\calO\paren{d_r(\epsilon / 2)^3 \cdot \frac{\paren{C(r) \cdot \mathrm{radius}(\calX)\, \cdot B(r)}^2}{\epsilon^2}}.\]
 \end{corollary}
-\begin{proof}
-	This follows by~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{barronUniversalApproximation1993}.
-\end{proof}
-
+The proof of this statement follows from~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{barronUniversalApproximation1993}. 
 This result shows that the size of the neural network needed to approximate $r$ scales with its spectrum decay $d_r(\cdot)$, which can be interpreted as a measure of the dimensionality or ``rank'' of the relation, and the smoothness of its eigenfunctions $B(r)$.
