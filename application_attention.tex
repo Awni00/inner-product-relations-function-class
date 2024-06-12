@@ -1,19 +1,19 @@
 \section{Application: Analysis of Attention}\label{sec:app_attention}
 
-In this section, we will use the results developed above to analyze the ``attention'' mechanism underlying the Transformer architecture that modern large language models are based on~\parencite[e.g.,][]{chungScalingInstructionFinetunedLanguage2022,openaiGPT4TechnicalReport2023,touvronLlamaOpenFoundation2023,taoriAlpacaStrongReplicable2023}.
+In this section, we will use the results developed above to analyze the attention mechanism underlying the Transformer architecture that modern large language models are based on~\parencite[e.g.,][]{chungScalingInstructionFinetunedLanguage2022,openaiGPT4TechnicalReport2023,touvronLlamaOpenFoundation2023,taoriAlpacaStrongReplicable2023}.
 
-Attention, popularized by the Transformer~\parencite{vaswani2017attention}, is a powerful mechanism for directing information flow in a machine learning model. Attention is the core component of Transformer models, which are composed of a sequence of ``blocks'' iterating between attention and a position-wise feedforward network. This simple architecture has achieved state-of-the-art results on a wide array of tasks, including natural language processing, vision, and speech recognition tasks~\parencite[e.g.,][]{devlinBertPretrainingDeep2018,dongSpeechtransformerNorecurrenceSequencetosequence2018,dosovitskiyImageWorth16x162020,raffelExploringLimitsTransfer2020,liuSwinTransformerHierarchical2021}.
+Attention, popularized by the Transformer~\parencite{vaswani2017attention}, is a powerful mechanism for directing information flow in a machine learning model. Attention is the core component of Transformer models, which are composed of a sequence of ``blocks'' iterating between attention and a position-wise feedforward network. This simple architecture has achieved state-of-the-art results on a wide array of tasks, including natural language processing, vision, and speech recognition~\parencite[e.g.,][]{devlinBertPretrainingDeep2018,dongSpeechtransformerNorecurrenceSequencetosequence2018,dosovitskiyImageWorth16x162020,raffelExploringLimitsTransfer2020,liuSwinTransformerHierarchical2021}.
 
-An attention module receives two inputs: a query $q \in \calX$ and a context $\bm{x} = (x_1, \ldots, x_n) \in \calX^n$. The aim of the attention module is to select the most relevant element in the context based on the query. Formally, attention takes the form,
+An attention module receives two inputs: a query $q \in \calX$ and a context $\bm{x} = (x_1, \ldots, x_n) \in \calX^n$. The aim of the attention module is to select the most relevant elements in the context based on the query. Formally, attention takes the form
 \begin{equation}\label{eq:def_attention}
     \begin{split}
         &\mathrm{Attention}\paren{q, (x_1, \ldots, x_n)} = \sum_{i=1}^n \alpha_i x_i, \ \text{where,} \\
         &\alpha_i = \frac{\exp(\beta \iprod{\phi_\theta(q)}{\psi_\theta(x_i)})}{\sum_j \exp(\beta \iprod{\phi_\theta(q)}{\psi_\theta(x_j)})},
     \end{split}
 \end{equation}
-where $\theta$ are the parameters of the attention module and $\beta > 0$ is a scaling factor. Hence, attention assigns each element $x_i$ in the context $\bm{x}$ a weight $\alpha_i$, and returns a convex combination of all elements in the context. The weights $\pparen{\alpha_i}_i$ are computed using inner products between the query and each element in the context. These elements are normalized with the ``softmax'' function, $\mathrm{softmax}(\bm{z}) \coloneq \bbra{\exp(z_i) / \sum_j \exp(z_j)}_{i=1}^{n}$, so called because it models a smooth version of a maximization function.
+where $\theta$ are the parameters of the attention module and $\beta > 0$ is a scaling factor. Hence, attention assigns each element $x_i$ in the context $\bm{x}$ a weight $\alpha_i$, and returns a convex combination of all elements in the context. The weights $\{\alpha_i\}$ are computed using inner products between the query and each element in the context. These elements are normalized with the ``softmax'' function, $\mathrm{softmax}(\bm{z}) \coloneq \bbra{\exp(z_i) / \sum_j \exp(z_j)}_{i=1}^{n}$, so called because it models a smooth version of a maximization function.
 
-Crucially, note that the inner products $\iprod{\phi_\theta(q)}{\psi_\theta(x_i)}$ in~\Cref{eq:def_attention} are \textit{asymmetric inner product relations} of the form analyzed in~\Cref{sec:asymmetric_relations}. In particular, attention computes a relation between the query $q$ and each element in the context $x_i$, which captures the relevance of $x_i$ to $q$. Roughly speaking, an attention module retrieves the ``most relevant'' element in the context.
+Crucially, the inner products $\iprod{\phi_\theta(q)}{\psi_\theta(x_i)}$ in~\Cref{eq:def_attention} are asymmetric inner product relations of the form analyzed in~\Cref{sec:asymmetric_relations}. In particular, attention computes a relation between the query $q$ and each element in the context $x_i$, which captures the relevance of $x_i$ to $q$. Roughly speaking, an attention module retrieves the ``most relevant'' element in the context.
 
 \begin{remark}
     In the standard implementation of attention in Transformers, $\phi_\theta$ and $\psi_\theta$ are linear maps. However, note that the preceding block ends with an MLP which processes all elements in the sequence in the same way. Hence, in Transformer attention, the inner product relations take the effective form $\iiprod{W_q \, \mathrm{MLP}(q)}{W_k \, \mathrm{MLP}(x_i)}$. A non-linear MLP followed by different linear projections has the same function class as two different non-linear MLPs (e.g., let $\mathrm{MLP} = (\phi_1, \ldots, \phi_d, \psi_1, \ldots, \psi_d)$ and $W_q, W_k$ the appropriate projection matrices). Hence, for ease of exposition, we analyze the case where $\phi_\theta, \psi_\theta$ are two different MLPs.
@@ -21,7 +21,7 @@ Crucially, note that the inner products $\iprod{\phi_\theta(q)}{\psi_\theta(x_i)
 
 In this section, we will use the universal approximation results for inner products of neural networks established in the previous sections to prove that attention can in fact always retrieve the ``most relevant'' element in any context using inner product relations.
 
-We will begin by formalizing the notion of ``most relevant element in a context.'' Fix a query $q \in \calX$. Let $\preceq_q$ be a query-dependent preorder relation on $\calX$ which specifies the relevance of different elements in $\calX$ to the query $q$. Formally, $\preceq_q$ is a complete (for each $a,b \in \calX$ either $a \preceq_q b$ or $b \preceq_q a$), reflexive ($a \preceq_q a$ for all $a \in \calX$), and transitive ($a \preceq_q b$ and $b \preceq_q c$ implies $a \preceq_q c$) relation.  We write $a \prec_q b$ if ``$a \preceq_q b$ and not $b \preceq_q a$'', and we write $a \sim_q b$ if ``$a \preceq_q b$ and $b \preceq_q a$''. Suppose each query $q \in \calX$ has a preorder $\preceq_q$ which defines a preordered space $(\calX, \preceq_q)$. The relation $x \prec_q y$ means that ``$y$ is more relevant to the query $q$ than $x$.''
+We begin by formalizing the notion of ``most relevant element in a context.'' Fix a query $q \in \calX$. Let $\preceq_q$ be a query-dependent preorder relation on $\calX$ which specifies the relevance of different elements in $\calX$ to the query $q$. Formally, $\preceq_q$ is a complete (for each $a,b \in \calX$ either $a \preceq_q b$ or $b \preceq_q a$), reflexive ($a \preceq_q a$ for all $a \in \calX$), and transitive ($a \preceq_q b$ and $b \preceq_q c$ implies $a \preceq_q c$) relation.  We write $a \prec_q b$ if $a \preceq_q b$ and not $b \preceq_q a$, and we write $a \sim_q b$ if $a \preceq_q b$ and $b \preceq_q a$. Suppose each query $q \in \calX$ has a preorder $\preceq_q$ that defines a preordered space $(\calX, \preceq_q)$. The relation $x \prec_q y$ means that ``$y$ is more relevant to the query $q$ than $x$.''
 
 For a given query $q$, the preordered space $(\calX, \preceq_q)$ defines the most relevant element with respect to the query $q$ among any context $\bm{x} = (x_1, \ldots, x_n) \in \calX^n$. We are interested in the ability of dot-product attention to retrieve the most relevant element for any given context. Hence, we are interested in approximating the function,
 \begin{equation}\label{eq:def_select}
@@ -31,22 +31,21 @@ That is, $\mathrm{Select}(q, (x_1, \ldots, x_n))$ is the function that returns t
 
 We impose some natural regularity assumptions on the family of relevance preorders $\sset{\preceq_q}_{q \in \calX}$.
 \begin{assumption}[Key-continuity]\label{ass:key_cts}
-    The family of relevance preorders $\sset{\preceq_q}_{q \in \calX}$ are said to be \textit{key-continuous} if, for each $q \in \calX$, the preorder $\preceq_q$ is continuous. That is, for all sequences $(x_i)_i$ such that $x_i \preceq_q y$ and $x_i \to x_\infty$, we have $x_\infty \preceq_q y$. Equivalently, for all $x \in \calX$, the sets $\sset{y \in \calX \colon y \preceq_q x}$ and $\sset{y \in \calX \colon x \preceq_q y}$ are closed with respect to the topology in $\calX$.
+    Let $\calX$ be a compact Euclidean space. The family of relevance preorders $\sset{\preceq_q}_{q \in \calX}$ is said to be \textit{key-continuous} if, for each $q \in \calX$, the preorder $\preceq_q$ is continuous. That is, for all sequences $(x_i)_i$ such that $x_i \preceq_q y$ and $x_i \to x_\infty$, we have $x_\infty \preceq_q y$. Equivalently, for all $x \in \calX$, the sets $\sset{y \in \calX \colon y \preceq_q x}$ and $\sset{y \in \calX \colon x \preceq_q y}$ are closed with respect to the topology of $\calX$.
 \end{assumption}
 
 As the name suggests, the assumption of ``key-continuity'' captures a notion of continuity in the relevance preorder. We will borrow from utility theory in the economics literature to ultimately show that the ``relevance preorder'' can be represented by the inner product relations of attention.~\citet{debreuRepresentationPreferenceOrdering1954} derived necessary an sufficient conditions for the existence of a continuous ordinal utility function on a preordered topological space. \Citeauthor{debreuRepresentationPreferenceOrdering1954}'s representation theorems imply the following.
 
 \begin{theorem*}[Existence of a continuous utility function for $\preceq_q$]
-    Let $\calX$ be a compact Euclidean space. Suppose $\sset{\preceq_q}_{q \in \calX}$ satisfies the key-continuity assumption (\Cref{ass:key_cts}). Then, for each query $q \in \calX$, there exists a continuous function $u_q: \calX \to \reals$ such that,
+    Let $\calX$ be a compact Euclidean space. Suppose $\sset{\preceq_q}_{q \in \calX}$ satisfies the key-continuity assumption (\Cref{ass:key_cts}). Then, for each query $q \in \calX$, there exists a continuous function $u_q: \calX \to \reals$ such that
     \begin{equation*}
         x \preceq_q y \ \iff \ u_q(x) \leq u_q(y).
     \end{equation*}
 \end{theorem*}
-\begin{proof}
-    This follows by~\parencite{debreuRepresentationPreferenceOrdering1954}, whose most general result requires only the continuity of $\preceq_q$ and that $\calX$ is a second-countable space. We also refer the reader to~\parencite{jaffrayExistenceContinuousUtility1975} for an elementary proof.
-\end{proof}
+This follows by~\parencite{debreuRepresentationPreferenceOrdering1954}, whose most general result requires only the continuity of $\preceq_q$ and that $\calX$ is a second-countable space. We also refer the reader to~\parencite{jaffrayExistenceContinuousUtility1975} for an elementary proof.
 
-We build on this to require an additional natural regularity condition on the family of relevance preorders $\sset{\preceq_q}_{q}$ which we term ``query-continuity.''
+
+We build on this to require an additional natural regularity condition on the family of relevance preorders $\sset{\preceq_q}_{q}$ that we call query-continuity.
 
 \begin{assumption}[Query-continuity]\label{ass:query_cts}
     There exists a set of relevance utility functions $\set{u_q: \calX \to \reals}_{q \in \calX}$ such that $u(q, x) \coloneq u_q(x)$ is continuous in $q$.
@@ -57,8 +56,9 @@ Note that by~\Citeauthor{debreuRepresentationPreferenceOrdering1954}'s represent
 We are now ready to state our result, which says that inner product attention can approximate any selection function of the form in~\Cref{eq:def_select}, provided the family of relevance preorders $\sset{\preceq_q}_q$ satisfies the two natural regularity conditions stated above.
 
 \begin{theorem}[Attention can approximate arbitrary information selection functions]
-    Let $\sset{\preceq_q}_q$ be a family of relevance preorders which satisfy the query continuity and key continuity assumptions~\Cref{ass:key_cts,ass:query_cts}. Suppose that for all $\varepsilon > 0$, there exists $\eta_\epsilon > 0$ such that, $\pprob{\min_{j \neq i} \aabs{u_q(x_i) - u_q(x_j)} > \eta_\epsilon} \geq 1 - \varepsilon$.
-    Then, there exists MLPs $\phi_\theta, \psi_\theta$ such that dot-product attention (\Cref{eq:def_attention}) approximates $\mathrm{Select}: \calX \times \calX^n \to \calX$ (as defined in~\Cref{eq:def_select}) arbitrarily well. Formally, for any $\epsilon > 0$, there exists MLPs $\phi_\theta, \psi_\theta$ such that with $\beta = \calO\paren{\eta_\epsilon^{-1} \log\paren{\epsilon^{-1} n \max_{x \in \calX} \norm{x}}}$, we have,
+    Let $\sset{\preceq_q}_q$ be a family of relevance preorders that satisfies the query continuity and key continuity assumptions~\Cref{ass:key_cts,ass:query_cts}. Suppose that for all $\varepsilon > 0$, there exists $\eta_\epsilon > 0$ uch that 
+    $$\pprob{\min_{j \neq i} \aabs{u_q(x_i) - u_q(x_j)} > \eta_\epsilon} \geq 1 - \varepsilon.$$
+    Then, there exist MLPs $\phi_\theta, \psi_\theta$ such that dot-product attention (\Cref{eq:def_attention}) approximates $\mathrm{Select}: \calX \times \calX^n \to \calX$ as defined in~\Cref{eq:def_select} arbitrarily well. Formally, for any $\epsilon > 0$, there exist MLPs $\phi_\theta, \psi_\theta$ such that with $\beta = \calO\paren{\eta_\epsilon^{-1} \log\paren{\epsilon^{-1} n \max_{x \in \calX} \norm{x}}}$, we have
     \begin{equation*}
         \norm{\mathrm{Attention}\paren{q, (x_1, \ldots, x)} - \mathrm{Select}\paren{q, (x_1, \ldots, x_n)}} < \epsilon
     \end{equation*}
@@ -66,12 +66,12 @@ We are now ready to state our result, which says that inner product attention ca
 \end{theorem}
 
 \begin{proof}
-    Let $r(x,y) \coloneq u_x(y)$ be the function to be approximated by the inner product relation $\hat{r}(x,y) \coloneq \iprod{\phi_\theta(x)}{\psi_\theta(y)}$ inside of attention. The scaling factor $\beta$ in~\Cref{eq:def_attention} will be determined later in the proof. By~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, we have that for any $\epsilon_1 > 0$, there exists MLPs $\phi_\theta, \psi_\theta$ such that,
+    Let $r(x,y) \coloneq u_x(y)$ be the function to be approximated by the inner product relation $\hat{r}(x,y) \coloneq \iprod{\phi_\theta(x)}{\psi_\theta(y)}$ inside of attention. The scaling factor $\beta$ in~\Cref{eq:def_attention} will be determined later in the proof. By~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, we have that for any $\epsilon_1 > 0$, there exist MLPs $\phi_\theta, \psi_\theta$ such that
     \begin{equation}\label{eq:attn_thm_proof_1}
         \sup_{x, y \in \calX} \abs{r(x,y) - \hat{r}(x, y)} < \epsilon_1.
     \end{equation}
 
-    Consider the input query $q$ and context $(x_1, \ldots, x_n)$. Let $i = \argmax(u_q(x_1), \ldots, u_q(x_n))$ be the index of the most relevant element in the context. Observe that,
+    Consider the input query $q$ and context $(x_1, \ldots, x_n)$. Let $i = \argmax(u_q(x_1), \ldots, u_q(x_n))$ be the index of the most relevant element in the context. Observe that
     \begin{align*}
         \alpha_i &= \frac{\exp(\beta \, \hat{r}(q, x_i))}{\sum_{j=1}^{n} \exp(\beta \, \hat{r}(q, x_j))}\\
         &= \frac{1}{1 + \sum_{j \neq i} \exp(\beta \cdot (\hat{r}(q, x_j) - \hat{r}(q, x_i)))}
@@ -83,12 +83,12 @@ We are now ready to state our result, which says that inner product attention ca
         &= u_q(x_j) - u_q(x_i) + 2 \epsilon_1 \\
         &< - \eta_{\epsilon} + 2 \epsilon_1
     \end{align*}
-    where the first line is by~\Cref{eq:attn_thm_proof_1}. Let $\epsilon_1 = \frac{1}{4}\eta_{\epsilon}$ such that $\hat{r}(q, x_j) - \hat{r}(q, x_i) < - \frac{1}{2} \eta_{\epsilon}$. Hence, we have that
+    where the first line is by~\Cref{eq:attn_thm_proof_1}. Let $\epsilon_1 = \frac{1}{4}\eta_{\epsilon}$ so that $\hat{r}(q, x_j) - \hat{r}(q, x_i) < - \frac{1}{2} \eta_{\epsilon}$. Hence, we have that
     \begin{equation*}
         \beta \cdot (\hat{r}(q, x_j) - \hat{r}(q, x_i)) < - \frac{1}{2} \, \beta \, \eta_{\epsilon}.
     \end{equation*}
 
-    This implies that,
+    This implies that
     \begin{align*}
         \alpha_i &> \frac{1}{1 + (n-1) \exp(- \frac{1}{2} \beta \eta_{\epsilon})} \\
         &= 1 - \frac{(n-1) \exp(- \frac{1}{2} \beta \eta_{\epsilon})}{1 + (n-1) \exp(- \frac{1}{2} \beta \eta_{\epsilon})} \\
@@ -96,7 +96,7 @@ We are now ready to state our result, which says that inner product attention ca
     \end{align*}
     where the last equality follows from the fact that $1 + (n-1) \exp(- \frac{1}{2} \beta \eta_{\epsilon}) > 1$.
 
-    Let $\bar{\epsilon} \coloneq (n-1) \exp\paren{- \frac{1}{2} \beta \eta_{\epsilon}}$, which can be made arbitrarily small by choosing $\beta$ large enough. Then we have that,
+    Let $\bar{\epsilon} \coloneq (n-1) \exp\paren{- \frac{1}{2} \beta \eta_{\epsilon}}$, which can be made arbitrarily small by choosing $\beta$ large enough. Then we have that
     \begin{align*}
         &\norm{\mathrm{Attention}\paren{q, (x_1, \ldots, x)} - \mathrm{Select}\paren{q, (x_1, \ldots, x_n)}} \\
         &= \norm{x_i - \sum_{j=1}^n{\alpha_j} x_j} \\
@@ -119,3 +119,4 @@ We are now ready to state our result, which says that inner product attention ca
 \begin{remark}
     The same construction works for a variable-size context, $\calX^* \coloneq \cup_{k=1}^n \calX^k$. Note that $\beta$ only needs to scale logarithmically in the size of the maximal context size $n$. (Although, in general, $\eta_\epsilon$ also indirectly depends on $n$ through the data distribution.) Moreover, the scale of $\beta$ is not a restriction on the function class since it can be incorporated into the feature maps $\phi_\theta, \psi_\theta$.
 \end{remark}
+
