@@ -40,7 +40,10 @@ Next, we proceed to show that arbitrary continuous relation functions can be app
 \begin{proof}
     Let $x_1, \ldots, x_n \in \calX$ be a set of points in $\calX$. Define the Voronoi partition by
     \[V^{(i)} = \sset{x \in \calX \,|\, \norm{x - x_i} \leq \norm{x - x_j} \ \forall j \neq i}.\]
-    Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \dim(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, with $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
+    Let $x_1, \ldots, x_n$ be uniformly distributed points in $\calX$ where $n = \calO(\delta(\epsilon)^{- \dim(\calX)})$ is chosen large enough so that each Voronoi cell $V^{(i)}$ has diameter bounded by $\delta(\epsilon)$.
+    % Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \dim(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, with $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. 
+    That is, $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$.
+    Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
 
     \citet{wuExplicitNeuralNetwork2018} explicitly construct a two-layer neural network $\eta:\calX \to \{0, 1\}^{n}$ such that
     \[{(\eta(x))}_i = 1 \iff x \in V^{(i)}.\]

@@ -143,7 +143,7 @@ The efficiency of neural networks in approximating arbitrary functions has been 
 	\begin{equation*}
 		\phi(x) = \sum_{k=1}^{N} a_k \mathrm{ReLU}(\iprod{w_k}{x} + b_k),
 	\end{equation*}
-	where $a_k, b_k \in \reals$, $w_k \in \reals^{d}$ are the parameters, and $N$ is the number of neurons. Then, for any $\epsilon > 0$, there exists $\phi \in \calV_N$ achieving $\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \iprod{\phi(x)}{\phi(y)}}} < \epsilon$ with a number of neurons $N$ of the order
+	where $a_k, b_k \in \reals$, $w_k \in \reals^{d}$ are the parameters, and $N$ is the number of neurons. Then, for any $\epsilon > 0$, there exists a neural network $\phi \in \calV_N$ such that $\sup_{x,y \in \mathcal{X}}{\abs{r(x,y) - \iprod{\phi(x)}{\phi(y)}}} < \epsilon$, where the number of neurons $N$ is of the order
 	\[\calO\paren{d_r(\epsilon / 2) \cdot \paren{\frac{4 C(r) d_r(\epsilon / 2) L(r, d_r(\epsilon/2))}{\epsilon}}^{d}}.\]
 \end{corollary}
 The proof of this result follows from~\Cref{theorem:symmetric_inner_prod_rels_func_class} and~\textcite{bachBreakingCurseDimensionality2016}.
