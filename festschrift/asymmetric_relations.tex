@@ -1,0 +1,98 @@
+\section{Function class of asymmetric inner product relations}\label{sec:asymmetric_relations}
+
+In the previous section, we considered symmetric inner product relations where the encoder of the first object is the same as the encoder of the second object. When the underlying relation being modeled is a symmetric `similarity' relation, this is a useful inductive bias. However, in general, relations between objects can be asymmetric. One example of an asymmetric (in fact, anti-symmetric) relation is \textit{order}. Such relations cannot be captured by symmetric inner products. In this section, we consider modeling a general asymmetric relation $r: \calX \times \calX \to \reals$ as the inner product of two different neural network encodings of a pair of objects,
+\begin{equation}\label{eq:asymmetric_iprod_relation}
+    r(x, y) = \iprod{\phi(x)}{\psi(y)},
+\end{equation}
+where $\phi, \psi: \calX \to \reals^d$ are two neural networks.
+We show that inner products of multi-layer perceptrons can approximate any continuous function on $\calX \times \calX$.
+
+We begin with the following simple lemma, which states when the object space $\calX$ is finite, any relation function can be represented as the inner product between two encodings.
+
+%\aanote{perhaps this should not be stated as a lemma. or simply removed?}
+\begin{lemma}\label{lemma:finite_space_rel}
+    Suppose $\calX$ is a finite space. Let $r: \calX \times \calX \to \reals$ be any relation function. Then, there exists $d \leq \abs{\calX}$ and $\phi, \psi: \calX \to \reals^{d}$ such that,
+    \begin{equation*}
+        r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ \forall x, y \in \calX.
+    \end{equation*}
+\end{lemma}
+
+To see this, let $x_1, \ldots, x_n$ be an enumeration of $\calX$ where $m = \abs{\calX}$. Let $R \in \reals^{n \times n}$ be such that $R_{ij} = r(x_i, x_j)$. There exists many decompositions of the matrix $R$ which would induce valid encodings $\phi, \psi$. One example is rank decomposition. Let $d = \mathrm{rank}(R)$. Then, there exists matrices $P, Q \in \reals^{d \times n}$ such that $R = P^\top Q$. Let $\phi, \psi: \calX \to \reals^{d}$ be defined by
+    \begin{equation}
+        \phi(x_i) = P_{i, \cdot}, \ \psi(x_i) = Q_{\cdot, i}, \ \forall i \in [m].
+    \end{equation}
+Then, $r(x, y) = \iprod{\phi(x)}{\psi(y)}$ for all $x, y \in \calX$.
+
+
+Note that if each $x \in \calX$ is a one-hot vector in $\reals^{\abs{\calX}}$, then the result above holds with linear maps $\phi, \psi$. Although very simple, this result has direct implications for domains such as language modeling where $\calX$ is a discrete set of tokens, and hence finite. In such cases,~\Cref{lemma:finite_space_rel} tells us that any relation function can be approximated by inner products of feature maps (i.e., of the form present in the attention mechanisms of Transformers). Moreover, in the case of language, there may be a low-rank structure (e.g., depending on syntax, semantics, etc.) enabling a more modest dimension of the feature maps, $d \ll \abs{\calX}$.
+
+Next, we proceed to show that arbitrary continuous relation functions can be approximated by inner products of two different neural networks. Our strategy will be to first quantize the space $\calX$ and then apply the construction above for the finite case.
+
+\begin{theorem}\label{theorem:asymemtric_inner_prod_rel_func_class}
+    Suppose the relation function $r: \calX \times \calX \to \reals$ is continuous. 
+    %In particular, for any $\epsilon > 0$, there exists $\delta(\epsilon) > 0$ such that for any $x, y, x', y'$ satisfying $\norm{x - x'} \leq \delta$, $\norm{y - y'} \leq \delta$, we have $\abs{r(x, y) - r(x', y')} \leq \epsilon$. 
+    Then, for any approximation error $\epsilon > 0$ there exist multi-layer perceptrons $\phi, \psi$ such that
+    \begin{equation*}
+        \abs{r(x,y) - \iprod{\phi(x)}{\psi(y)}} \leq \epsilon, \quad \text{Lebesgue-almost everywhere.}
+    \end{equation*}
+    Moreover, $\phi, \psi$ can be constructed such that $\phi = L_\phi \circ \eta$, $\psi = L_\psi \circ \eta$ where $\eta$ is a shared 2-layer MLP with $N = \calO(\delta^{- 2 \,\dim(\calX)})$ neurons and $L_\phi, L_\psi$ are linear projections onto $n$-dimensional space, with $n = \calO(\delta^{- \dim(\calX)})$ and $\delta = \delta(\epsilon)$.
+\end{theorem}
+\begin{proof}
+    Let $x_1, \ldots, x_n \in \calX$ be a set of points in $\calX$. Define the Voronoi partition by
+    \[V^{(i)} = \sset{x \in \calX \,|\, \norm{x - x_i} \leq \norm{x - x_j} \ \forall j \neq i}.\]
+    Let $x_1, \ldots, x_n$ be uniformly distributed in $\calX$ and $n = \calO(\delta(\epsilon)^{- \dim(\calX)})$ so that the maximal diameter of the sets $V^{(1)}, \ldots, V^{(n)}$ is bounded by $\delta(\epsilon)$, with $\max_{i \in [n]} \mathrm{diam}(V^{(i)}) \leq \delta$. Let $q: \calX \to \sset{x_1, \ldots, x_n}$ be the quantizer which maps each $x$ to the closest element in $\sset{x_1, \ldots, x_n}$.
+
+    \citet{wuExplicitNeuralNetwork2018} explicitly construct a two-layer neural network $\eta:\calX \to \{0, 1\}^{n}$ such that
+    \[{(\eta(x))}_i = 1 \iff x \in V^{(i)}.\]
+    The construction contains $n (n - 1)$ neurons in the first layer and $n$ neurons in the second layer, both with the threshold function $\sigma(x) = \bm{1}\sset{x \geq 0}$ as the activation function. Note that sigmoidal activation functions can approximate the step function arbitrarily well. The weights between the first and second layers are sparse. The neural network takes the form,
+    \begin{equation*}
+        \begin{aligned}
+            z_{k,j}^{(1)}(x) &= \sigma\paren{w_{k,j}^{(1)} \cdot x - b_{k,j}^{(1)}}, \quad k,j \in [n], k \neq j\\
+            z_k^{(2)}(x) &= \sigma\paren{w_k^{(1)} \cdot \bm{z}^{(1)}(x) - b^{(2)}}, \quad k \in [n] \\
+            \eta(x) &= \bm{z}^{(2)}(x) = \paren{z_1^{(2)}(x), \ldots, z_n^{(2)}(x)},
+        \end{aligned}
+    \end{equation*}
+    where the weights are $w_{k,j}^{(1)} = x_k - x_j, b_{k,j}^{(1)} = \frac{1}{2} \iiprod{x_k - x_j}{x_k + x_j}, (w_{k}^{(2)})_{a,b} = \bm{1}\sset{a = k}, b^{(2)} = n - 1$, and $\bm{z}^{(1)} = (z_{k,j}^{(1)})_{k \neq j} \in \reals^{n (n - 1)}$ are the first layer activations.
+
+    Let $R \in \reals^{n \times n}$ be defined by $\bbra{R}_{ij} = r(x_i, x_j)$. The matrix $R$ specifies the relation function on the sample points $x_1, \ldots, x_n$. We have that $R = P^\top Q,\, P,Q \in \reals^{m \times n}$ for some $m \leq n$. 
+
+    Let $\phi = P \circ \eta$ and $\psi = Q \circ \eta$. To show that the inner product of neural networks $\iprod{\phi(x)}{\psi(y)}$ approximates $r(x, y)$, take $x, y \in \calX$. We have
+    \begin{align*}
+        \abs{r(x, y) - \iprod{\phi(x)}{\psi(y)}} &\leq \abs{r(x, y) - r(q(x), q(y))} + \abs{r(q(x), q(y)) - \iprod{\phi(x)}{\phi(y)}}\\
+        &\leq \epsilon + \abs{r(q(x), q(y)) - \eta(x)^\top R\, \eta(y)},
+    \end{align*}
+    where the second inequality follows by the assumption of continuity on the relation function $r$ and the choice of the quantization diameter $\delta$. Now, note that whenever $x \in \mathrm{int}(V^{(i)})$, we have $\eta(x) = e_i$, where $e_i$ is the canonical basis vector. Hence $r(q(x), q(y)) = \eta(x)^\top R\, \eta(y)$ Lebesgue-almost everywhere. 
+\end{proof}
+
+\begin{remark}
+    From a learning perspective, we only need to know the value of the relation function at $n$ (uniformly distributed) points $x_1, \ldots, x_n$, with $n = \calO(\delta^{-d})$ depending on the smoothness of $r$ and the dimension of the space $\calX$.
+\end{remark}
+
+\begin{remark}
+    In the symmetric case, where the relation function $r$ is assumed to be a positive-definite kernel, Mercer's theorem implies an inner product-like structure in $r$, with a ``rank'' determined by the spectral decay of the kernel. In the asymmetric case, the above result assumes only the continuity of the relation function $r$ and no further ``inner-product-like'' structure. In some applications, the relation function may have a low-rank structure such that it is representable by an inner product between low-dimensional feature maps, enabling more favorable bounds on the size of the neural network needed, even in the asymmetric case.
+\end{remark}
+
+Here, again, we observe a curse of dimensionality in~\Cref{theorem:asymemtric_inner_prod_rel_func_class}, where the number of neurons needed to obtain a good approximation scales exponentially with the dimension of the underlying space $\calX$. We note that~\Cref{theorem:asymemtric_inner_prod_rel_func_class} makes very mild regularity conditions on the relation function to be approximated---it only needs to be continuous as a function from $\calX \times \calX$ to $\reals$. In general, an exponential dependence on $2\,\cdot\, \dim(\calX)$ is necessary for any method of approximation~\citep{pinkus1999approximation,devore1998nonlinear,maiorov1999lower,maiorov2000near,poggioWhyWhenCan2017}.
+
+This exponential dependence on dimension can be avoided with additional structure on the relation function. Here, we consider a compositional structure where the relation depends on the object vectors only through a smooth low-dimensional feature filter. That is, the target relation function $r: \calX \times \calX \to \reals$ takes the form
+\begin{equation*}
+    r(x, y) = \bar{r}(\xi(x), \xi(y)),
+\end{equation*}
+where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and $\bar{r}$ is a continuous relation on the feature $\xi$. For example, $\calX$ may be a high-dimensional image space, while $\xi$ is a low-dimensional filter representing a particular visual attribute such as color or texture in some patch of the image. We will consider smoothness of $\xi$ as measured by the Barron norm, $\nnorm{f}_{\calB} \coloneq \int_{\reals^d} \nnorm{\hat{\nabla f}(\omega)} d\omega$. We write $\nnorm{\xi}_{\calB}$ to mean $\max_{i \in [k]} \nnorm{\xi_i}_{\calB}$.
+
+\begin{corollary}
+    Consider the setting of~\Cref{theorem:asymemtric_inner_prod_rel_func_class}. Suppose the relation function $r: \calX \times \calX \to \reals$ has the form $r(x, y) = \bar{r}(\xi(x), \xi(y))$ where $\xi: \calX \to \reals^k$ has Barron norm $\nnorm{\xi}_\calB$ and $\bar{r}: \reals^k \times \reals^k \to \reals$ is $L$-Lipschitz in the sense that $$\aabs{\bar{r}(x, y) - \bar{r}(x', y')} \leq L \cdot (\max(\nnorm{x - x'}_\infty, \nnorm{y - y'}_\infty)), \, \forall x,x',y,y' \in \xi(\calX).$$ Then, for any $\epsilon > 0$, there exists $\hat{\xi}, \phi = L_\phi \circ \eta, \psi = L_\psi \circ \eta$, such that
+    \[\norm{r(x, y) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \leq \epsilon\]
+    where $\hat{\xi}$ is a shallow 1-hidden layer neural network with $\calO(k \cdot \frac{\nnorm{\xi}_{\calB}^2}{\epsilon^2})$ hidden neurons and $k$ output neurons, $\eta$ is a 2-layer neural network with $\calO((\frac{L}{\epsilon})^{2 k})$ neurons, and $L_\phi, L_\psi$ are linear projections onto $\calO((\frac{L}{\epsilon})^{k})$-dimensional space.
+\end{corollary}
+\begin{proof}
+    We have
+    \begin{align*}
+        &\norm{r(x, y) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \\
+        &\leq \norm{\bar{r}(\xi(x), \xi(y)) - \bar{r}(\hat{\xi}(x), \hat{\xi}(y))}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \\
+        &\leq \norm{L \paren{\infnorm{\xi(x) - \hat{\xi}(x)} + \infnorm{\xi(y) - \hat{\xi}(y)}}}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2}
+    \end{align*}
+    The first term can be controlled by constructing $\hat{\xi}$ to approximate $\xi$ in the $L^2$ norm according to the construction of~\textcite{barronUniversalApproximation1993}. The number of neurons needed depends on the smoothness of the function $\xi$. The second term can be approximated uniformly (not just in $L^2$) by constructing MLPs $\phi, \psi$ according to~\Cref{theorem:asymemtric_inner_prod_rel_func_class} to approximate $\bar{r}$. Here, the complexity of the neural network class needed depends on $k$ rather than $d$.
+\end{proof}
+
+This result shows that if the underlying relation function possesses a compositional structure depending on a low-dimensional smooth feature map, then it can be efficiently approximated by inner products of neural networks. In particular, the number of neurons needed scales with the dimensionality $k$ of the feature filter $\xi$ and the smoothness of $\xi$, as measured by the Barron norm.

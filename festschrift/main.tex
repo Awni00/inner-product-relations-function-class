@@ -1,0 +1,107 @@
+% \documentclass[12pt,pdftex,noinfoline]{imsart}
+\documentclass{svmult}
+
+% \RequirePackage[OT1]{fontenc}
+\usepackage{mymathstyle}
+\usepackage{papercommands}
+
+% region set up fixme and in-text annotations
+\usepackage{pdfcomment}
+\usepackage[draft, margin, noinline, mode=multiuser, author=]{fixme}
+\usepackage[us]{datetime}
+\fxloadlayouts{pdfcnote}
+\fxuseenvlayout{colorsig} % plain, signature, color, colorsig
+\fxusetargetlayout{changebar} % plain, changebar, color, colorcb
+\FXRegisterAuthor{aa}{anaa}{AA}
+\FXRegisterAuthor{jl}{anjl}{JL}
+\fxusetheme{colorsig}
+\fxsetface{margin}{\scriptsize}
+% endregion
+
+\makeatletter
+\let\c@author\relax
+\makeatother
+\usepackage[
+    style=authoryear-comp,
+    dashed=false,
+    sorting=nty,
+    sortcites=false,
+    maxbibnames=8,
+    doi=false,
+    url=false,
+    isbn=false,
+    eprint=false,
+    backend=bibtex,
+    natbib
+    ]{biblatex}
+\addbibresource{references.bib}
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{day}}
+\renewbibmacro*{volume+number+eid}{%
+  \printfield{volume}%
+%  \setunit*{\adddot}% 
+  \setunit*{\addnbspace}% 
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+\usepackage{xpatch}
+\xpatchbibdriver{article}
+  {\usebibmacro{title}%
+   \newunit}
+  {\usebibmacro{title}%
+   \printunit{\addcomma\space}}
+  {}
+  {}
+\xpatchbibdriver{inproceedings}
+  {\usebibmacro{title}%
+   \newunit}
+  {\usebibmacro{title}%
+   \printunit{\addcomma\space}}
+  {}
+  {}
+\setlength\bibitemsep{7pt}
+\renewbibmacro{in:}{}
+\def\coloneq{:=}
+
+
+\begin{document}
+% \title*{Approximation of relation functions and attention mechanisms}
+% \author{Awni Altabaa, John Lafferty}
+% \institute{Yale University, Department of Statistics \& Data Science}
+
+\title*{Approximation of relation functions and attention mechanisms}
+% Use \titlerunning{Short Title} for an abbreviated version of
+% your contribution title if the original one is too long
+% \author{Awni Altabaa\orcidID{0000-1111-2222-3333} and\\ John Lafferty\orcidID{1111-2222-3333-4444}}
+\author{Awni Altabaa and John Lafferty}
+% Use \authorrunning{Short Title} for an abbreviated version of
+% your contribution title if the original one is too long
+\institute{Awni Altabaa \at Yale University, Department of Statistics \& Data Science; \email{awni.altabaa@yale.edu}
+\and John Lafferty \at Yale University, Department of Statistics and Data Science, Wu Tsai
+Institute; \email{john.lafferty@yale.edu}}
+
+\maketitle
+
+\input{abstract}
+
+\input{intro}
+\input{symmetric_relations.tex}
+\input{asymmetric_relations.tex}
+\input{reproducing_kernels_connection.tex}
+\input{application_attention.tex}
+
+% \input{transformer_ngram_lm_icl.tex}
+
+\input{discussion}
+
+\newpage
+\section*{Acknowledgment}
+This work is supported by the funds provided by the National Science Foundation and by DoD OUSD (R\&E) under Cooperative Agreement PHY-2229929 (The NSF AI Institute for Artificial and Natural Intelligence).
+
+\printbibliography
+
+\newpage
+\listoffixmes
+
+\end{document}

@@ -1,0 +1,118 @@
+\section{Transformers can approximate $n$-gram Language Models In-Context}
+
+In this section, we will show that the Transformer architecture is able to compute $n$-gram language models \textit{in-context}.
+
+\begin{definition}[$n$-gram language model]
+    Let $\calD = (w_1, \ldots, w_N)$ be a string of text, where $w_t \in \calV \coloneq [V]$ is a word represented as an integer. The set of $n$-grams given by this dataset are $n-\text{grams}(\calD) = \set{w_{1:n}, w_{2:n+1}, \ldots, w_{T-n:n}}$. The $n$-gram language model for this dataset computes
+    \begin{equation*}
+        \prob{w_{t} = \cdot \given w_{1:t-1}} = \frac{\sum_{g \in \calD} \bm{1}\sset{g_n = \cdot,\, g_{1:n-1}= w_{t-n:t-1}}}{\sum_{g \in \calD} \bm{1}\sset{g_{1:n-1}= w_{t-n:t-1}}}.
+    \end{equation*}
+\end{definition}
+
+We will show that there exists a Transformer which approximates the \textit{algorithm} which computes an $n$-gram language model. Note that this is different from approximating the $n$-gram language model itself (e.g.~\citet{svete2024transformers} show this), where the Transformer model's weights encode the statistical relationships in the data $\calD$. Rather, the weights of the Transformers encodes the ``algorithm'' of computing an $n$-gram language model from the context. That is, at each token, the model will look at the past and calculate the statistics needed for an $n$-gram language model.
+
+\begin{theorem}[Transformers can represent $n$-gram language models through ICL]
+    Consider a language modeling task with a vocabulary $\calV = [V]$. There exists a $2$-layer Transformer with $n$-attention heads and model dimension bounded by $\calO(n \log V)$ which approximates an in-context learning $n$-gram language modeling algorithm arbitrarily well.
+\end{theorem}
+
+We will now construct this Transformer explicitly. The construction will proceed according to the following procedure:
+
+\begin{enumerate}
+    \item Map tokens/words to embeddings which are well-separated so that they can be decoded and selected via attention
+    \item In the first Transformer layer, each token's internal representation is updated to encode its $n$-step history.
+    \item In the second Transformer layer, each token attends back to its past and retrieves $n$-grams with matching $n-1$-step histories, then computes ``next token'' statistics.
+\end{enumerate}
+
+\subsection*{Set up and technical lemmas that will be useful for the construction}
+
+The following result on spherical codes by~\citet{wyner1965capabilities} shows that $V$ different `codes' can be embedded in the $\log V$-dimensional sphere in a way that preserves the separation between distinct `code' and allows them to be decoded.
+
+\begin{lemma}[\citet{wyner1965capabilities}]\label{lemma:wyner}
+    There exists $d_v = \calO(\log V)$ and $x_1, \ldots, x_V \in \bbS^{d_v-1}$ such that
+    \begin{equation*}
+        \Delta \coloneq \max_{i \neq j} \iprod{x_i}{x_j} \leq \frac{1}{2}.
+    \end{equation*}
+\end{lemma}
+
+We will choose the word embeddings $x_1, \ldots, x_V \in \bbS^{d_v}$ such that they satisfy this ``separability'' property: $\Delta \coloneq \max_{i\neq j} \iiprod{x_i}{x_j} \leq \frac{1}{2}$.
+
+This will enable us to decode robustly with an attention operation.
+
+\begin{lemma}\label{lemma:attn_decadbility}
+    Let $q \in \bbS^d$ and $\calX = \sset{x_1, \ldots, x_n} \in \bbS^d$ such that $\ttwonorm{q - x_i}^2 \leq \eta$ and $\Delta \coloneq \max_{i \neq j} \iiprod{x_i}{x_j}$. Then, $\alpha \coloneq \mathrm{Softmax}\paren{\beta \bra{\iprod{q}{x_i}}_i} \in \Delta^n$ is such that 
+    \[\alpha_i \geq 1 - \epsilon \quad \text{with} \quad \epsilon \coloneq (n-1) \exp\paren{\beta\paren{\Delta + \frac{\eta}{2} + \sqrt{\eta} - 1}}.\]
+\end{lemma}
+
+\aawarning[margin,noinline]{to-do: add proof and relax $q \in \bbS^d$ to $q \in \reals^d$}
+
+This implies that if $\Delta + \frac{\eta}{2} + \sqrt{\eta} - 1 > 0$ then $\alpha_i \to 1$ as the inverse-temperature $\beta \to \infty$. That is, if the word embeddings are well-separated enough (which~\Cref{lemma:wyner} guarantees with $d_v = \calO(\log V)$), then attention can robustly decode by recovering the one-hot vector representing $i \in [V]$.
+
+\subsection*{Embedding layer}
+
+Let $\calX = \sset{x_1, \ldots, x_V} \subset \reals^{d_v}$ be word embeddings for each word in the vocabulary $\calV \coloneq [V]$. Let $p_1, \ldots, p_T \in \reals^{d_p}$ be positional embeddings for positions $1, \ldots, T$, where $T$ is the maximum context length of the Transformer. Those could be sinusoidal positional embeddings for the purposes of this section.
+
+The embedding layer maps a sequence of tokens $[V]^T$ to a sequence of embeddings $\reals^{T \times (d_v + d_p)}$ via
+\begin{align*}
+    w_1, \ldots, w_T \ \longmapsto \ (x_{w_1}, p_1), \ldots, (x_{w_T}, p_T) =: E_1, \ldots, E_T.
+\end{align*}
+
+Here $E_i \coloneq (x_{w_i}, p_i) \in \reals^{d_v + d_p}$ is simply the concatenation of the word embedding and the positional embedding. Note that, in practice, Transformers \textit{add} rather than concatenate positional embeddings. Such a constrain does not change the construction below: we can simply replace any concatenation by an addition of two orthogonal vectors (e.g., if we impose that $x_{i:d} = 0$ and $y_{1:i}=0$ then $x+y = (x, y)$)
+
+
+\subsection*{First Transformer layer}
+
+To approximate an $n$-gram language model, the first layer has $n$ attention heads, with the $h$-th attention head retrieving the word embedding of of the token $h$ steps back.
+
+\[E_{i}^{(1), h} \approx \mathrm{Proj}_x(E_{i-h}) = x_{w_{i-h}}, \quad i \in [T], h \in [n].\]
+
+Here, $\mathrm{Proj}_x$ is simply the linear maps from $\reals^{d_v + d_p}$ to $\reals^{d_v}$ which project out the first $d_v$ components corresponding to the word embedding.
+
+\aawarning{to-do: construct $W_q^h, W_k^h$ to approximate this. e.g., with sinusoidal positional embeddings. for sinusoidal PPE, there exist linear maps $W_k$ which map $p_i$ to $p_{i+k}$.}
+
+Then, the embeddings after the first attention layer encode the $n$-length history of tokens at each position,
+\begin{equation*}
+    E_i^{(1)} \approx \bra{x_{w_{i}}, x_{w_{i-1}}, \ldots, x_{w_{i-n}}} \in \reals^{n \cdot d_v}.
+\end{equation*}
+
+\aanote[margin,noinline]{what about boundary condition? i.e., positions $1, \ldots, n-1$. Negligible as $T \to \infty$?}
+
+Note that $d_E^{(0)} = d_v + d_p$ but $d_E^{(1)} = n \cdot d_v$. Again, in practice, Transformers have embedding dimensions which don't vary with layers but this doesn't change the construction since we may simply pick the embedding dimension as the maximum over layers and keep it constant.
+
+\subsection*{Second Transformer layer}
+
+We will construct a Transformer layer which perform the following computation: look back and select all $n$-grams with a matching pattern, then compute ``next token'' statistics. We require a single head of attention.
+
+Define the softmax ``decoder'' as 
+\[\mathrm{Decode}(x) = \mathrm{Softmax}\paren{\beta \bbra{\iprod{x}{x_1}, \ldots, \iiprod{x}{x_V}}}.\]
+
+Observe that by~\Cref{lemma:wyner,lemma:attn_decadbility}, $\mathrm{Decode}(x)_i \geq 1 - \epsilon$ for $\ttwonorm{x - x_i} < \eta$ where $\epsilon = (V -1) \exp(\beta(\eta/2 + \sqrt{\eta} - 1/2))$. Thus, whenever $\eta/2 + \sqrt{\eta} > 1/2$, $\mathrm{Decode}(x) \to e_i$ as $\beta \to \infty$.
+
+Let
+\begin{align*}
+    \bar{\alpha}_{ij} &= \iprod{\mathrm{Proj}_{2:n}(E_i)}{\mathrm{Proj}_{1:n-1}(E_j)} - \infty \bm{1}\sset{j > i}\\
+    \alpha_{i\cdot} &= \mathrm{Softmax}\paren{\beta [\alpha_{ij}]_j},
+\end{align*}
+where $\mathrm{Proj}_{1:n-1}$ is the linear map from $\reals^{n \cdot d_v}$ to $\reals^{(n-1) \cdot d_v}$ projecting out the first $n-1$ word embeddings of the $n$-gram representation. Similarly, $\mathrm{Proj}_{2:n}$ projects out the last $n-1$ word embeddings of the $n$-gram. Intuitively, for a query $n$-gram $q = (x_{t-n}, \ldots, x_{t-1}, x_{t})$ and key $n$-grams $k^j = (x_{t-n}^j, \ldots, x_{t-1}^j, x_{t}^j)$, we will construct an attention operation which matches the $(x_{t-n+1}, \ldots, x_{t-1}, x_{t})$ component of the query to the $(x_{t-n}^j, \ldots, x_{t-1}^j)$ components of the keys and computes the statistics of the ``next token'' $x_t^j$ in the matching key $n$-grams.
+
+The attention scores $\alpha_{ij}$ will approximate
+\begin{equation*}
+    \alpha_{ij} \approx  \begin{cases} \frac{1}{\# \text{$n$-gram matches}}, \qquad &\text{if } (w_i, w_{i-1}, \ldots, w_{i-n+1}) = (w_{j-1}, w_{j-2}, \ldots, w_{j-n}) \\ 0 &  \text{otherwise}\end{cases}
+\end{equation*}
+
+
+With this, we can compute $\prob{x_{i+1} = \cdot \given x_{i-n:i}}$ via
+\begin{equation*}
+    O_i \gets \sum_{j} \alpha_{ij} \mathrm{Decode}(\mathrm{Proj}_n(E_j^{(1)})).
+\end{equation*}
+
+This satisfies
+\begin{equation*}
+    O_{ik} \approx \frac{1}{\# \text{$n$-gram matches}} \sum_{\text{matches}} \bm{1}\sset{\text{next token is } k},
+\end{equation*}
+
+which is precisely an $n$-gram language model.
+
+
+\aanote{currently we are applying $\mathrm{Decode}: \reals^{d_v} \to \reals^{V}$ (which is a non-linear map $\phi_v$) on the retrived values directly before computing the convex combination by weights $\alpha_{ij}$. This is a bit of a cheat since in a standard Transformer, you would compute something like $O_i \gets \sum_{j} \alpha_{ij} \mathrm{Proj}_n(E_j^{(1)})$, and then at the final layer you would apply $\mathrm{Decode}$ which corresponds to matmul by a weight-tied final layer then softmax. can this be avoided? the challenge is that, although the individual word embeddings are decodable, the distribution of words is not necessarily decodable from a mixed convex combination of word embeddings... what we need is embeddings $x_1, \ldots, x_V$ such that $\alpha_{i}$'s are recoverable from $\sum_{i} \alpha_i x_i$ with $x_i$ still having modest dimension w.r.t. $V$ (i.e., not orthogonal $x_v$). can coding theory come to the rescue again?}
+
+\aanote{to-do:formalize all the $\approx$'s and add concrete bounds.}

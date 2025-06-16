@@ -1,0 +1,156 @@
+\section{Connection to reproducing kernel Hilbert and Banach spaces}\label{sec:rkbs_asymmetric_relations}
+
+In~\Cref{sec:symmetric_relations} we showed that the function class of symmetric inner products of neural networks is the set of symmetric positive-definite kernels---that is, reproducing kernels of reproducing kernel Hilbert spaces (RKHS). There exists a similar interpretation of the function class of asymmetric inner products of neural networks in terms of the reproducing kernels of \textit{reproducing kernel Banach spaces} (RKBS).
+
+Recall that a reproducing kernel Hilbert space $\calH$ is a Hilbert space of functions on a space $\calX$ for which the point evaluation functionals $f \mapsto f(x)$ are continuous. \citet{aronszajn1950theory} showed that there is a one-to-one identification between RKHSs and symmetric positive definite kernels $K: \calX \times \calX \to \reals$ such that $\iprod{K(x, \cdot)}{f}_\calH = f(x)$.~\citet{mercerFunctionsPositive1909} had previously shown that an RKHS can be identified with a feature map via the spectral decomposition of the integral operator $T_K: L_2(\calX) \to L_2(\calX)$ defined by $T_K f(x) = \int_\calX K(x, y) f(y) dy$. Every feature map $\phi: \calX \to \calW$ defines a symmetric positive definite kernel $K(x, y) = \iprod{\phi(x)}{\phi(y)}_\calW$ (and hence, an RKHS), while every symmetric positive definite kernel has infinitely many feature map representations.
+
+\Cref{theorem:symmetric_inner_prod_rels_func_class} shows that the function class of symmetric inner products of neural networks is the set of reproducing kernels of RKHS function spaces. A reproducing kernel Hilbert space is, as the name suggests, a \textit{Hilbert space} of functions on some space $\calX$. The linear structure of a Hilbert space makes the kinds of geometries it can capture relatively restrictive, since any two Hilbert spaces with the same dimension are isometrically isomorphic. Banach spaces, which have fewer structural assumptions, can capture richer geometric structures. Hence, a reproducing kernel Banach space can capture richer geometries between functions than an RKHS. In particular, in contrast to an RKHS, the reproducing kernel of an RKBS need not be symmetric or positive definite. In this section, we show that the function class of asymmetric inner products of neural networks has an interpretation in terms of the reproducing kernels of RKBSs, mirroring the result for symmetric inner products of neural networks. Nonsymmetric kernels of positive type, a more restricted class, were studied by \citet{seelyNonSymmetricKernels1919}, shortly after Mercer's seminal work for the symmetric case. % \citep{mercerFunctionsPositive1909}.
+%\footnote{While working on extending~\Cref{theorem:symmetric_inner_prod_rels_func_class} to the asymmetric case, we came across an interesting paper from 1919 which studied non-symmetric kernels of positive type~\parencite{seelyNonSymmetricKernels1919}. Mercer's work from a decade earlier studied \textit{symmetric} kernels of positive type---the proof of~\Cref{theorem:symmetric_inner_prod_rels_func_class} relied on the property of uniform convergence of the series of characteristic functions: $\sum_i \lambda_i \psi_i(s)\psi_i(t) \to K(s,t)$. Ultimately, we didn't use the results of~\parencite{seelyNonSymmetricKernels1919} since asymmetric neural network inner products need not be of positive-type (the function class is in fact larger).}.
+
+\subsection{Background on reproducing kernel Banach spaces}
+
+\begin{definition}[Reproducing Kernel Banach Space]
+    A \textbf{reproducing kernel Banach space} on a space $\calX$ is a Banach space $\calB$ of functions on $\calX$, satisfying:
+    \begin{enumerate}
+        \item $\calB$ is \textit{reflexive}. That is, $(\calB^*)^* = \calB$, where $\calB^*$ is the dual space of $\calB$. Furthermore, $\calB^*$ is isometric to a Banach space $\calB^\#$ of functions on $\calX$.
+        \item The point evaluation functionals $f \mapsto f(x)$ are continuous on both $\calB$ and $\calB^\#$.
+    \end{enumerate}
+\end{definition}
+
+This definition is a strict generalization of reproducing kernel Hilbert spaces, as any RKHS $\calH$ on $\calX$ is also an RKBS, since (1) is implied by the Riesz representation theorem. While the identification $\calB^\#$ is not unique, we can choose some identification arbitrarily and denote it by $\calB^*$ for ease of notation (by assumption, all identifications are isometric to each other). Thus, if $\calB$ is an RKBS, $\calB^*$ is also an RKBS.
+
+Similar to an RKHS, an RKBS also has a \textit{reproducing kernel}. To state the result, for a normed vector space $\calV$ and its dual space $\calV^*$, we define the bilinear form
+\begin{equation}\label{eq:bilinear_form}
+    \begin{split}
+        \calV \times \calV^* &\to \reals\\
+        (u, v^*)_\calV &\mapsto v^*(u).
+    \end{split}
+\end{equation}
+
+Theorem 2 of \citet{zhangReproducingKernel2009} shows that for any RKBS $\calB$ there exists a unique reproducing kernel $K: \calX \times \calX \to \bbC$ that recovers point evaluations, meaning
+\begin{align}
+    f(x) &= \paren{f, K(\cdot, x)}_\calB, \quad \forall f \in \calB, \\
+    f^*(x) &= \paren{K(x, \cdot), f^*}_\calB,\quad \forall f^* \in \calB^*,
+\end{align}
+
+and such that the span of $K(x, \cdot)$ is dense in $\calB$ and the span of $K(\cdot, x)$ is dense in $\calB^*$,
+\begin{align}
+    \overline{\text{span}}\{K(x, \cdot): x \in \calX\} &= \calB, \\
+    \overline{\text{span}}\{K(\cdot, x): x \in \calX\} &= \calB^*.
+\end{align}
+Finally,
+\begin{equation}
+    K(x, y) = \paren{K(x, \cdot), K(\cdot, y)}_\calB, \ \forall x, y \in \calX.
+\end{equation}
+Unlike RKHSs, while each RKBS has a unique reproducing kernel, different RKBSs may have the same reproducing kernels.
+
+Furthermore, a kernel $K: \calX \times \calX \to \bbC$ is the reproducing kernel of some RKBS if and only if it has a feature map representation. Crucially for us, the feature map representation is more versatile than the one for RKHSs. Let $\calW$ be a reflexive Banach space with dual space $\calW^*$. Consider a pair of feature maps $\Phi$ and $\Phi^*$, mapping to each feature space, respectively. That is,
+\begin{equation*}
+    \Phi: \calX \to \calW, \ \Phi^*: \calX \to \calW^*,
+\end{equation*}
+where we call $\Phi,\, \Phi^*$ the \textit{pair} of feature maps and $\calW,\, \calW^*$ the pair of feature spaces. Suppose that the span of the image of the feature maps under $\calX$ is dense in their respective feature spaces. That is,
+\begin{equation}
+    \overline{\text{span}}\{\Phi(x): x \in \calX\} = \calW, \;\; \overline{\text{span}}\{\Phi^*(x): x \in \calX\} = \calW^*.
+\end{equation}
+Then, by Theorem 3 of \citet{zhangReproducingKernel2009}, the feature maps $\Phi, \Phi^*$ induce an RKBS defined by
+\begin{align}
+    \calB &:= \set{f_w: x \mapsto (\Phi^*(x))(w), w \in \calW} \\
+    \norm{f_w}_\calB &:= \norm{w}_\calW,
+\end{align}
+with the dual space $\calB^*$ defined by
+\begin{align}
+    \calB^* &:= \set{f_{w^*}: x \mapsto w^*(\Phi(x)), w^* \in \calW^*} \\
+    \norm{f_{w^*}}_{\calB^*} &:= \norm{w^*}_{\calW^*}.
+\end{align}
+Furthermore, for any RKBS, there exist some feature spaces $\calW, \calW^*$ and feature maps $\Phi, \Phi^*$ such that the above construction yields that RKBS, which is Theorem 4 of \citet{zhangReproducingKernel2009}.
+
+\subsection{Asymmetric inner products of neural networks model kernels of reproducing kernel Banach spaces}
+
+Observe that for an RKBS with feature-map representation given by $\Phi, \Phi^*$, its reproducing kernel is given by
+\begin{equation}
+    K(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\calW}, \ x, y \in \calX,
+\end{equation}
+where $\paren{\cdot, \cdot}_{\calW}$ is the bilinear form on $\calW$ defined in~\Cref{eq:bilinear_form}.
+
+This form is reminiscent of the asymmetric inner product of neural networks,
+\begin{equation}
+    r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ x, y \in \calX,
+\end{equation}
+where $\phi, \psi: \calX \to \reals^{d}$ is a pair of learned feature maps. We will show that asymmetric inner products of neural networks can approximate any reproducing kernel of an RKBS.
+
+Let $\Phi, \Phi^*$ be a pair of feature maps that define the reproducing kernel $r(x,y) = \pparen{\Phi(x), \Phi^*(y)}_\calW$ for some RKBS. Recall that any two Hilbert spaces with equal dimensions are isometrically isomorphic. Hence, when the feature space $\calW$ is a Hilbert space, we can consider $\calW = \ell^2(\naturals)$ without loss of generality. %Note that $\ell^2(\naturals)$ is self-dual. Hence, by the Riesz representation theorem, there exists a unique element $\sigma(\Phi^*(y)) \in \ell^2(\bbN)$ such that $r(x,y) = \iprod{\Phi(x)}{\sigma \circ \Phi^*(y)}_{\ell^2}$.
+
+The following theorem states that when $\calB$ is an RKBS on $\calX$ with a feature map representation whose feature space $\calW$ is a Hilbert space, its reproducing kernel can be approximated by an asymmetric inner product of neural networks. The proof is similar to that of~\Cref{theorem:symmetric_inner_prod_rels_func_class}.
+
+\begin{theorem}\label{thm:asymmetric_inner_prod_approximates_rkbs}
+   Suppose $\calX$ is a compact metric space. Suppose $r: \calX \times \calX \to \reals$ is the reproducing kernel of some RKBS $\calB$ on $\calX$ admitting a continuous feature map representation with a feature space $\calW$ that is a Hilbert space. 
+   Then, for any $\varepsilon > 0$, there exist multi-layer perceptrons 
+    $\phi, \psi: \calX \to \reals^{d}$ such that 
+   \begin{equation*}
+        \sup_{x,y \in \calX} \abs{r(x, y) - \iprod{\phi(x)}{\psi(y)}} \leq \varepsilon.
+   \end{equation*}
+\end{theorem}
+
+\begin{proof}
+    By assumption, there exists a Hilbert space $\calW$ and a pair of feature maps $\Phi: \calX \to \calW, \Phi^*: \calX \to \calW$ such that,
+    \begin{equation*}
+        r(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\calW} \equiv (\Phi^*(y))(x), \ x, y \in \calX.
+    \end{equation*}
+
+    Without loss of generality, we can restrict our attention to the feature space $\calW = \ell^2(\bbN)$, since any two Hilbert spaces with equal dimension are isometrically isomorphic. The dual space is $\calW^* = \ell^2(\bbN)$. Hence, for feature maps $\Phi, \Phi^*$, the ground truth relation to be approximated is,
+    \begin{equation*}
+        r(x, y) = \paren{\Phi(x), \Phi^*(y)}_{\ell^2(\bbN)} \equiv (\Phi^*(y))(\Phi(x)), \ x, y \in \calX.
+    \end{equation*}
+    By the Riesz representation theorem, there exists a unique element in $u_{\Phi^*(y)} \in \ell^2(\bbN)$ such that,
+    \begin{equation*}
+        (\Phi^*(y))(w) = \iprod{w}{u_{\Phi^*(y)}}_{\ell^2(\bbN)}, \ \forall w \in \ell^2(\bbN).
+    \end{equation*}
+    Let $\sigma: \ell^2(\bbN)^* \to \ell^2(\bbN)$ denote the mapping from an element in the dual space to its Riesz representation. Then $\sigma$ is a bijective isometric antilinear isomorphism; the Riesz representation can be constructed via an orthonormal basis through $\sigma(w^*) = \sum_{i \in I} w^{*}(e_i) e_i$, where $\set{e_i}_{i \in I}$ is some basis for $\calW$.
+
+    Thus, the relation function on $\calX \times \calX$ that we need to approximate is
+    \begin{equation*}
+        r(x, y) = \iprod{\sigma \circ \Phi^* (y)}{\Phi(x)}_{\calW}, \ x, y \in \calX.
+    \end{equation*}
+    We do this by approximating $\Phi: \calX \to \calW$ with the MLP $\psi$ and approximating $\sigma \circ \Phi^*: \calX \to \calW$ with the MLP $\phi$.
+
+    First, since $\Phi(x), \sigma \circ \Phi^*(y) \in \ell^2(\bbN), \forall x, y$, and $\calX$ is compact, we have
+    \begin{equation*}
+        \lim_{n \to \infty} \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{i=1}^{n} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} = 0.
+    \end{equation*}
+    Thus, let $d$ be such that,
+    \begin{equation}\label{eq:thm1_proof_eq1}
+        \sup_{x,y \in \calX} \abs{r(x, y) - \sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} < \frac{\varepsilon}{2}.
+    \end{equation}
+    We will obtain MLPs $\phi,\, \psi$ that are functions from $\calX$ to $\reals^{d}$. 
+    %Let $\paren{(\Phi(x))_1, \ldots, (\Phi(x))_{d}}$ be the function to be approximated by the MLP $\phi_\theta$ and let $\paren{(\sigma(\Phi^*(y)))_1, \ldots, (\sigma(\Phi^*(y)))_{d}}$ be the function to be approximated by the MLP $\psi$. 
+    By the universal approximation property of MLPs, for any $\tilde{\varepsilon} > 0$, there exists MLPs $\phi,\,\psi$ such that
+    \begin{equation}\label{eq:thm1_proof_eq2}
+        \sup_{x \in \calX} \abs{(\phi(x))_i - (\Phi(x))_{i}} < \tilde{\varepsilon} \ \text{ and } \ \sup_{x \in \calX} \abs{(\psi(y))_i - (\sigma(\Phi^*(x)))_{i}} < \tilde{\varepsilon}, \ \forall i \in \set{1, \ldots, d}.
+    \end{equation}
+    For example, \citet{cybenkoApproximationSuperpositions1989} shows that 1-layer neural networks with discriminatory activation functions of the form $\sum_{i=1}^{N} \alpha_i \sigma(w_j^\top x + b_j)$ are dense in the space of continuous functions.
+    Now,
+    \begin{align*}
+        &\sup_{x,y \in \calX} \abs{r(x,y) - \hat{r}(x,y)} \\
+        &= \sup_{x,y \in \calX} \abs{r(x,y) - \iprod{\phi(x)}{\psi(y)}} \\
+        &\leq \sup_{x,y\in \calX} \paren{\abs{r(x,y) - \sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i} + \abs{\sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - \iprod{\phi(x)}{\psi(y)}}}.
+    \end{align*}
+    The first term is less than $\varepsilon / 2$ by~\Cref{eq:thm1_proof_eq1}. Now, we bound the second term uniformly on $x,y \in \calX$, as
+    \begin{align*}
+        &\abs{\sum_{i=1}^{d} (\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - \iprod{\phi(x)}{\psi(y)}} \\
+        &\leq \sum_{i=1}^{d} \abs{(\Phi(x))_i \cdot (\sigma(\Phi^*(y)))_i - (\phi(x))_i(\psi_i(y))_i} \\
+        &\leq \sum_{i=1}^{d} \paren{\abs{(\sigma(\Phi^*(y)))_i} \abs{(\sigma(\Phi^*(y)))_i - (\psi_i(y))_i} + \abs{(\Phi(x))_i} \abs{(\Phi(x))_i - (\phi(x))_i}}\\
+        &\leq C(\Phi, \Phi^*, d) \sum_{i=1}^{d} \paren{\abs{(\sigma(\Phi^*(y)))_i - (\psi_i(y))_i} + \abs{(\Phi(x))_i - (\phi(x))_i}},
+    \end{align*}
+    where $C(\Phi, \Phi^*, d) \coloneq \max\sset{\max_{y \in \calX, i \in [d]} \aabs{(\sigma(\Phi^*(y)))_i}, \max_{x \in \calX, i \in [d]} \aabs{\abs{(\Phi(x))_i}}}$. Let the approximation error $\tilde{\varepsilon}$ in~\Cref{eq:thm1_proof_eq2} be small enough such that the above is smaller than $\varepsilon / 2$. This shows that
+    \begin{equation*}
+        \sup_{x,y \in \calX} \abs{r(x,y) - \tilde{r}_i(x,y)} \leq \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
+    \end{equation*}
+\end{proof}
+
+\begin{remark}
+    The reason we assume that the underlying RKBS $\calB$ admits a feature map representation with feature space $\calW$ that is a Hilbert space is so that we can use the Riesz representation theorem. The Riesz representation theorem is what links the broad framework of reproducing kernel Banach spaces back to the inductive bias of modeling relations as inner products of feature maps.
+\end{remark}
+
+\begin{remark}
+    \citet{zhangReproducingKernel2009} explore a specialization of reproducing kernel Banach spaces in which $\calB$ has a semi-inner product. This added structure grants semi-inner product RKBSs some desirable properties that RKHSs have but general RKBSs lack (e.g., convergence in the space implies pointwise convergence, weak universality of kernels, etc.). However, their notion of a semi-inner product is too restrictive to allow for our model $\iprod{\phi(x)}{\psi(x)}$.
+\end{remark}

@@ -1,0 +1,54 @@
+% THIS IS THE OLD VERSION OF THE RESULT ON APPROXIMATING ASYMMETRIC RELATIONS WITH INNER PRODUCTS OF MLPS
+% THE NEW VERSION CONTAINS A MORE PRECISE AND MORE GENERAL ARGUMENT, ALLOWING FOR A BOUND ON THE COMPLEXITY OF MLPS
+% AS WELL AS USING DIFFERENT APPROXIMATION RESULTS WITH DIFFERENT NORMS
+
+With this result, we can show that any continuous function on $\calX \times \calX$ can be approximated by inner products of neural networks (or other universal approximators). The argument proceeds by first quantizing the space $\calX$ and using~\Cref{lemma:finite_space_rel} to represent the relation function as an inner product of encodings. Then, a similar argument to~\Cref{theorem:symmetric_inner_prod_rels_func_class} shows the result.
+
+\begin{theorem}\label{theorem:asymemtric_inner_prod_rel_func_class}
+    Suppose $\calX$ is a compact subset of euclidean space. Consider the relation model,
+    \begin{equation*}
+        \hat{r}(x, y) := \iprod{\phi_\theta(x)}{\psi_\theta(y)},
+    \end{equation*}
+    \noindent where $\phi_\theta, \psi_\theta: \calX \to \reals^d$ are multi-layer perceptrons with parameters $\theta$. Then, for any continuous relation function $r: \calX \times \calX \to \reals$ there exists multi-layer perceptrons with parameters $\theta$ such that $\hat{r}$ approximates $r$ uniformly over $(x,y) \in \calX \times \calX$. Formally, for any $\epsilon > 0$, there exists neural networks with parameters $\theta$ such that,
+    \begin{equation*}
+        \sup_{x, y \in \calX} \abs{r(x,y) - \hat{r}(x,y)} < \epsilon.
+    \end{equation*}
+\end{theorem}
+
+\begin{proof}
+    Let $\calN_\delta(\calX)$ be a $\delta$-net of $\calX$. That is, a finite subset of $\calX$ such that $\max_{x \in \calX} \min_{y \in \calN_\delta(\calX)} \norm{x - y} < \delta$. Let $q$ be a projection from $\calX$ on to the $\delta$-net. That is, $q(x) \in \argmin_{y \in \calN_\delta(\calX)} \norm{x - y}$. By the continuity of $r$ and compactness of $\calX$, let $\delta > 0$ be small enough such that,
+    \begin{equation*}
+        \sup_{x, y \in \calX} \abs{r(x,y) - r(q(x), q(y))} < \varepsilon / 2.
+    \end{equation*}
+    Since $\calN_\delta(\calX)$ is a finite set, by~\Cref{lemma:finite_space_rel}, there exists $d \in \bbN$ and $\phi, \psi: \calN_\delta(\calX) \to \reals^d$ such that $r(x, y) = \iprod{\phi(x)}{\psi(y)}, \ \forall x,y \in \calN_\delta(\calX)$. Thus, $r(q(x), q(y)) = \iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)}, \ \forall x,y \in \calX$.  Now, we would like to approximate $\phi \circ q$ with $\phi_\theta$ and $\psi \circ q$ with $\psi_\theta$.
+
+    For any $x, y \in \calX$, we have,
+    \begin{equation*}
+        \begin{split}
+            &\abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
+            &= \abs{\sum_{i=1}^{d} \paren{((\phi \circ q)(x))_i ((\psi \circ q)(y))_i - (\phi_\theta(x))_i (\psi_\theta(y))_i}} \\
+            &\leq \sum_{i=1}^{d} \abs{((\phi \circ q)(x))_i ((\psi \circ q)(y))_i - (\phi_\theta(x))_i (\psi_\theta(y))_i} \\
+        &\leq \sum_{i=1}^d \paren{ \abs{(\phi_\theta(x))_i} \abs{((\psi \circ q)(y))_i - (\psi_\theta(y))_i} + \abs{(\psi_\theta(y))_i} \abs{((\phi \circ q)(x))_i - (\phi_\theta(x))_i}} \\
+    \end{split}
+\end{equation*}
+
+Note that $\phi \circ q$ and $\psi \circ q$ are continuous (in fact, piecewise constant) functions on a compact euclidean space $\calX$. By the universal approximation of multi-layer perceptrons, there exists $\theta$ such that
+\begin{equation*}
+    \sup_{x, y \in \calX} \abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} < \frac{\varepsilon}{2}
+\end{equation*}
+
+Hence, we have,
+\begin{equation*}
+    \begin{split}
+        &\sup_{x, y \in \calX} \abs{r(x, y) - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
+        &\leq \sup_{x, y \in \calX} \abs{r(x, y) - r(q(x), q(y))} + \sup_{x, y \in \calX} \abs{r(q(x), q(y)) - \iprod{\phi_\theta(x)}{\psi_\theta(y)}} \\
+        &\leq  \sup_{x, y \in \calX} \abs{r(x, y) - r(q(x), q(y))} + \sup_{x, y \in \calX} \abs{\iprod{(\phi \circ q)(x)}{(\psi \circ q)(y)} - \iprod{\phi_\theta(x)}{\psi_\theta(y)}}  \\
+        &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
+    \end{split}
+\end{equation*}
+
+\end{proof}
+
+\begin{remark}
+    Note that the same analysis allows us to model any continuous relation function between two different spaces, $r: \calX \times \calY \to \reals$. We can similarly quantize both spaces (with different quantizers) and incorporate the quantizers in $\phi$ and $\psi$, respectively.
+\end{remark}
