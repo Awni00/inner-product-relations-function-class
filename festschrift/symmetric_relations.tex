@@ -92,7 +92,8 @@ We are now ready to formally state the main result of this section.
 		\begin{split}
 			&\bignorm{r(x,y) - \langle \phi_\theta(x), \phi_\theta(y) \rangle}_{\calF^{\otimes 2}}\\
 			&= \norm{ r(x,y) - \sum_{i=1}^{d}{\phi_i(x) \phi_i(y)}}_{\calF^{\otimes 2}} \\
-			&\leq \norm{ r(x,y) - \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)}}_{\calF^{\otimes 2}} + \norm{\sum_{i=1}^{d}\lambda_i \psi_i(x) \psi_i(y) - \sum_{i=1}^{d}\phi_i(x) \phi_i(y)}_{\calF^{\otimes 2}}
+			&\leq \norm{ r(x,y) - \sum_{i=1}^{d}{\lambda_i \psi_i(x) \psi_i(y)}}_{\calF^{\otimes 2}} \\
+			&\quad + \norm{\sum_{i=1}^{d}\lambda_i \psi_i(x) \psi_i(y) - \sum_{i=1}^{d}\phi_i(x) \phi_i(y)}_{\calF^{\otimes 2}}
 		\end{split}
 	\end{equation}
 	The first term is bounded by $\frac{\epsilon}{2}$ by~\eqref{eq:proof_mercer_thm_unif_abs_cv}. The second term can be bounded by noting the for any $x, y \in \calX$

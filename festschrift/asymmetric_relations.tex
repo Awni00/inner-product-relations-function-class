@@ -93,7 +93,8 @@ where $\xi : \calX \to \reals^k$ is a smooth $k$-dimensional feature filter and 
     \begin{align*}
         &\norm{r(x, y) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \\
         &\leq \norm{\bar{r}(\xi(x), \xi(y)) - \bar{r}(\hat{\xi}(x), \hat{\xi}(y))}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2} \\
-        &\leq \norm{L \paren{\infnorm{\xi(x) - \hat{\xi}(x)} + \infnorm{\xi(y) - \hat{\xi}(y)}}}_{L^2} + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2}
+        &\leq \norm{L \paren{\infnorm{\xi(x) - \hat{\xi}(x)} + \infnorm{\xi(y) - \hat{\xi}(y)}}}_{L^2} 
+        + \norm{\bar{r}(\hat{\xi}(x), \hat{\xi}(y)) - \iprod{\phi(\hat{\xi}(x))}{\psi(\hat{\xi}(y))}}_{L^2}.
     \end{align*}
     The first term can be controlled by constructing $\hat{\xi}$ to approximate $\xi$ in the $L^2$ norm according to the construction of~\textcite{barronUniversalApproximation1993}. The number of neurons needed depends on the smoothness of the function $\xi$. The second term can be approximated uniformly (not just in $L^2$) by constructing MLPs $\phi, \psi$ according to~\Cref{theorem:asymemtric_inner_prod_rel_func_class} to approximate $\bar{r}$. Here, the complexity of the neural network class needed depends on $k$ rather than $d$.
 \end{proof}
