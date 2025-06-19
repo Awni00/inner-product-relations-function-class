@@ -124,7 +124,7 @@ We are now ready to state our result, which says that inner product attention ca
 \end{remark}
 
 \highlight{Relational attention}
-Finally, we mention how this implies a related result for ``relational attention,'' which has recently been shown to be a powerful modification of the standard attention mechanism for relational reasoning tasks
+Finally, we observe that this implies a related result for \textit{relational attention}, which has recently been shown to be a powerful modification of the standard attention mechanism for relational reasoning tasks
 \citep{altabaaAbstractorsRelationalCrossattention2024,altabaa2024disentanglingintegratingrelationalsensory}.
 Relational attention takes the form
 \begin{equation}\label{eq:def_relattention}
@@ -146,4 +146,5 @@ independent of the actual keys $k_1,\ldots, k_n$.
     the preorder $\preceq_q$.
 \end{corollary}
 
+The significance of this result is to show that attention mechanisms defining   relations through inner products can be used to identify \textit{which} objects are most relevant to a query, without manipulating transformed encodings of the objects themselves. Several studies have shown how this can lead to large reductions in sample complexity for relational tasks \citep{altabaa2024disentangling,altabaaAbstractorsRelationalCrossattention2024}.
 
