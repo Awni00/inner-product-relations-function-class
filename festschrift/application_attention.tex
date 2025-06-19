@@ -134,7 +134,7 @@ where the attention weights $\alpha_i$ are as defined previously, but where now
 the vectors $s_1,\ldots, s_n$ are ``abstract symbols'' depending only on the positions $1,\ldots, n$,
 independent of the actual keys $k_1,\ldots, k_n$.
 
-\begin{theorem}[Relational attention can approximate arbitrary selection functions]
+\begin{corollary}[Relational attention can approximate arbitrary selection functions]
     Under the same assumptions made in Theorem 4, 
     for any $\epsilon > 0$, there exist MLPs $\phi_\theta, \psi_\theta$ such that with $\beta = \calO\paren{\eta_\epsilon^{-1} \log\paren{\epsilon^{-1} n \max_{i \in [n]} \norm{s_i}}}$, we have
     \begin{equation*}
@@ -144,6 +144,6 @@ independent of the actual keys $k_1,\ldots, k_n$.
     $$i^* = i^*(q,x_{1:n}) = \argmax(u_q(x_i)\,:\, i\in[n])$$ 
     is the argmax function for the utility function $u_q$ associated with 
     the preorder $\preceq_q$.
-\end{theorem}
+\end{corollary}
 
 
