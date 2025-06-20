@@ -151,4 +151,26 @@ We are now ready to state our result, which says that inner product attention ca
 
 % VERSION 2: high-level discussion
 \highlight{Relational attention}
-In this section, we focused on the standard attention mechanism employed in Transformer models~\citep{vaswani2017attention}. Here, the learned inner-product relations serve as a parameterization of a selection criterion that determines what information is attended to in a given context. Notably, while this selection criterion is relational, the retrieved information consists of the embeddings of individual objects, and is not explicitly relational. In recent work, a variant of the attention mechanism called \textit{relational attention} was explored where the information attended to is itself a representation of inner product relations~\citep{altabaaAbstractorsRelationalCrossattention2024, altabaa2024disentanglingintegratingrelationalsensory}. This approach was shown to lead to significant improvements in data efficiency in relational reasoning tasks. The results developed in earlier versions of this work have been used to analyze the representational capacity of relational attention, shedding light into its capabilities. For further details, we point to \citet{altabaaAbstractorsRelationalCrossattention2024, altabaa2024disentanglingintegratingrelationalsensory}.
+In this section, we focused on the standard attention mechanism employed in Transformer models~\citep{vaswani2017attention}. Here, the learned inner-product relations serve as a parameterization of a selection criterion that determines what information is attended to in a given context. Notably, while this selection criterion is relational, the retrieved information consists of the embeddings of individual objects, and is not explicitly relational. In recent work, a variant of the attention mechanism called \textit{relational attention} was explored where the information attended to is itself a representation of inner product relations~\citep{altabaaAbstractorsRelationalCrossattention2024, altabaa2024disentanglingintegratingrelationalsensory}. This approach was shown to lead to significant improvements in data efficiency in relational reasoning tasks. 
+A simple version of relational attention takes the form
+\begin{equation}\label{eq:def_relattention}
+\mathrm{RelAttention}\paren{q, x_{1:n}, s_{1:n}} = \sum_{i=1}^n \alpha_i s_i,
+\end{equation}
+where the attention weights $\alpha_i$ are as defined previously, but where now
+the vectors $s_1,\ldots, s_n$ are ``abstract symbols'' depending only on the positions $1,\ldots, n$,
+independent of the actual keys $k_1,\ldots, k_n$. The following result follows 
+directly from the previous theorem.
+
+\begin{corollary}[Relational attention can approximate arbitrary selection functions]
+    Under the same assumptions made in Theorem 4, 
+    for any $\epsilon > 0$, there exist MLPs $\phi_\theta, \psi_\theta$ such that with $\beta = \calO\paren{\eta_\epsilon^{-1} \log\paren{\epsilon^{-1} n \max_{i \in [n]} \norm{s_i}}}$, we have
+     \begin{equation*}
+         \norm{\mathrm{RelAttention}\paren{q, x_{1:n}, s_{1:n}} - s_{i^*}} < \epsilon
+     \end{equation*}
+     with probability at least $1 - \epsilon$, where 
+     $$i^* = i^*(q,x_{1:n}) = \argmax(u_q(x_i)\,:\, i\in[n])$$ 
+     is the argmax function for the utility function $u_q$ associated with 
+     the preorder $\preceq_q$.
+\end{corollary}
+
+ The significance of this result is to show that attention mechanisms defining relations through inner products can be used to identify \textit{which} objects are most relevant to a query, without manipulating transformed encodings of the objects themselves. For further details, we point to \citet{altabaaAbstractorsRelationalCrossattention2024, altabaa2024disentanglingintegratingrelationalsensory}.
